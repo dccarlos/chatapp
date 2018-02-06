@@ -1,6 +1,6 @@
 package org.sjimenez.chatapp;
 
-import model.User;
+import org.sjimenez.chatapp.model.User;
 import org.apache.ibatis.type.MappedTypes;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;

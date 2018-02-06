@@ -1,4 +1,4 @@
-package model;
+package org.sjimenez.chatapp.model;
 
 import java.util.Date;
 import java.util.Objects;

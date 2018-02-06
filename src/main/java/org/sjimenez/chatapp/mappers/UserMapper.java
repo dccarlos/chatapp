@@ -1,12 +1,13 @@
-package mappers;
-import model.User;
+package org.sjimenez.chatapp.mappers;
+import org.sjimenez.chatapp.model.User;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
 @Mapper
 public interface UserMapper {
-    @Select("select * from users")
+
+    @Select("select * from user")
     List<User> findAll();
 
     @Options(useGeneratedKeys = true, keyProperty = "iduser", keyColumn = "iduser")
@@ -14,7 +15,7 @@ public interface UserMapper {
     int insert(User user);
 
 
-    @Update("TRUNCATE TABLE users; ALTER TABLE user ALTER COLUMN iduser RESTART WITH 1")
+    @Update("TRUNCATE TABLE user; ALTER TABLE user ALTER COLUMN iduser RESTART WITH 1")
     void truncateTableUsers();
 
 }

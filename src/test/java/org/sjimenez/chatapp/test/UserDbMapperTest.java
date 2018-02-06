@@ -1,7 +1,8 @@
-package org.sjimenez.chatapp;
+package org.sjimenez.chatapp.test;
 
-import mappers.UserMapper;
-import model.User;
+
+import org.sjimenez.chatapp.mappers.UserMapper;
+import org.sjimenez.chatapp.model.User;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -11,15 +12,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
 import java.util.Date;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class UserDbMapperTest {
+
 
     @Autowired
     private UserMapper userMapper;
@@ -31,7 +31,7 @@ public class UserDbMapperTest {
     @Before
     public void truncateTable() {
         logger.warn("BEFORE TEST");
-        userMapper.truncateTableUsers();
+       userMapper.truncateTableUsers();
     }
     @BeforeClass
     static public void initTestObjects(){
