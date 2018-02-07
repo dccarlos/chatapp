@@ -14,7 +14,6 @@ public interface UserMapper {
     @Insert("insert into user(name,lastName,mail,nickName,birthdate) values(#{name},#{lastName},#{mail},#{nickname},#{birthdate})")
     int insert(User user);
 
-
     @Update("TRUNCATE TABLE user; ALTER TABLE user ALTER COLUMN iduser RESTART WITH 1")
     void truncateTableUsers();
 
