@@ -1,6 +1,9 @@
 package org.sjimenez.chatapp.model;
 
-import java.util.Date;
+
+
+import javax.persistence.Convert;
+import java.time.LocalDate;
 import java.util.Objects;
 
 public class User {
@@ -9,7 +12,9 @@ public class User {
     private String name;
     private String lastName;
     private String mail;
-    private Date birthdate;
+
+
+    private LocalDate birthdate;
     private String nickname;
 
     public int getIduser() {
@@ -44,11 +49,11 @@ public class User {
         this.mail = mail;
     }
 
-    public Date getBirthdate() {
+    public LocalDate getBirthdate() {
         return birthdate;
     }
 
-    public void setBirthdate(Date birthdate) {
+    public void setBirthdate(LocalDate birthdate) {
         this.birthdate = birthdate;
     }
 

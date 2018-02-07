@@ -12,8 +12,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import java.util.Date;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 
 @RunWith(SpringRunner.class)
@@ -30,39 +37,34 @@ public class UserDbMapperTest {
 
     @Before
     public void truncateTable() {
-        logger.warn("BEFORE TEST");
+        logger.warn("BEFORE TESTT");
        userMapper.truncateTableUsers();
     }
     @BeforeClass
-    static public void initTestObjects(){
-        Date date=new Date();
-        System.out.println(date.toString());
+    static public void initTestObjects() throws ParseException {
+        logger.warn("Before Class");
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MMM-dd");
+        LocalDate date = LocalDate.parse("2005-nov-12", formatter);
+
+        //Date date=new Date();
+        System.out.println(date.toString());
         user=new User();
         user.setName("roshi");
         user.setLastName("kame");
         user.setMail("sjc@gmail.com");
         user.setNickname("jackiechun");
         user.setBirthdate(date);
-
     }
 
-    
     @Test
-    public void insert() {
-        /*
+    public void insertUser() {
         logger.warn("INSERT TEST");
-        AppUser users = new AppUser();
-        users.setUsername("jiren");
-        users.setEmail("sjc");
-        Integer i = userMapper.insert(users);
-        System.out.println(i);
-        System.out.println("isnertado" + String.valueOf(i));
-        AppUser users2 = userMapper.selectUserLastRecord();
-        System.out.println("id:" + users2.getIdusers());
-        assertNotNull(users2);
-        assertEquals("diferent chains", "jiren", users2.getUsername());
-        */
+        userMapper.insert(user);
+        List<User> list=userMapper.findAll();
+        assertEquals("Compare returned id",1,user.getIduser());
+        assertEquals("total rows",1,list.size());
+        System.out.println("fefefecha:"+list.get(0).getBirthdate());
     }
 
 
