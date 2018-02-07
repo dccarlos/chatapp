@@ -23,7 +23,6 @@ import java.time.format.DateTimeFormatter;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
-@DirtiesContext(classMode= DirtiesContext.ClassMode.AFTER_CLASS)
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class UserResourceControllerTest {
