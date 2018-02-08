@@ -39,7 +39,6 @@ public class UserDbMapperTest {
     public void initUnitTest() {
         logger.info("BEFORE TEST");
         userMapper.truncateTableUsers();
-
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate date = LocalDate.parse("2005-06-12", formatter);
         user = new User();
@@ -49,6 +48,7 @@ public class UserDbMapperTest {
         user.setNickname("jackiechun");
         user.setBirthdate(date);
     }
+
     @Test
     public void insertUser_GodFormat() {
         logger.info("INSERT TEST");
@@ -57,16 +57,6 @@ public class UserDbMapperTest {
         assertEquals("Compare returned id", 1, user.getIduser());
         assertEquals("total rows", 1, list.size());
     }
-    @Ignore
-    @Test
-    public void insertUser_TwoUsers() {
-        logger.info("INSERT TEST");
-        userMapper.insert(user);
-        userMapper.insert(user);
-        userMapper.insert(user);
-        List<User> list = userMapper.findAll();
-        assertEquals("Compare returned id", 3, user.getIduser());
-        assertEquals("total rows", 3, list.size());
-    }
+
 
 }

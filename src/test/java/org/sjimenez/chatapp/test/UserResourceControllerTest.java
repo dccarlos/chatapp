@@ -48,7 +48,6 @@ public class UserResourceControllerTest {
         user.setNickname("jackiechun");
         user.setBirthdate(date);
     }
-
     @Test
     public void insertControllerTest() throws JSONException {
         when(userMapper.insert(user)).thenReturn(1);
@@ -57,39 +56,35 @@ public class UserResourceControllerTest {
         HttpEntity<User> request = new HttpEntity<User>(user, headers);
         ResponseEntity<User> response = restTemplate.postForEntity("http://localhost:" + String.valueOf(port) + "/user/resources/insert", request, User.class);
         assertEquals("son iguales", user, response.getBody());
+        assertEquals("Expected http response 200",HttpStatus.OK,response.getStatusCode());
     }
-
     @Test
     public void insertControllerTest_BadFormatOrNull() {
         user.setMail("it");
-        when(userMapper.insert(user)).thenReturn(1);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<User> request = new HttpEntity<User>(user, headers);
         ResponseEntity<User> response = restTemplate.postForEntity("http://localhost:" + String.valueOf(port) + "/user/resources/insert", request, User.class);
-        Assert.assertNull(response.getBody());
+        System.out.println("RESPONSE"+response);
+        assertEquals("Expected http response 400",HttpStatus.BAD_REQUEST,response.getStatusCode());
     }
-
     @Test()
     public void insertControllerTest_DuplicatedKeyException() {
-
         when(userMapper.insert(user)).thenThrow(org.springframework.dao.DuplicateKeyException.class);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<User> request = new HttpEntity<User>(user, headers);
         ResponseEntity<User> response = restTemplate.postForEntity("http://localhost:" + String.valueOf(port) + "/user/resources/insert", request, User.class);
-        assertEquals("Equal errors", HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertEquals("Expected http response 409", HttpStatus.CONFLICT, response.getStatusCode());
     }
-
     @Test()
     public void insertControllerTest_PresistenceErrorException() {
-
         when(userMapper.insert(user)).thenThrow(org.apache.ibatis.exceptions.PersistenceException.class);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<User> request = new HttpEntity<User>(user, headers);
         ResponseEntity<User> response = restTemplate.postForEntity("http://localhost:" + String.valueOf(port) + "/user/resources/insert", request, User.class);
-        assertEquals("Equal errors", HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertEquals("Expected http response 500", HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
 
 }
