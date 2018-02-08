@@ -1,5 +1,6 @@
 package org.sjimenez.chatapp.test;
 
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import org.json.JSONException;
 import org.junit.*;
 import org.junit.runner.RunWith;
@@ -49,6 +50,7 @@ public class UserResourceControllerTest {
         user.setBirthdate(date);
     }
 
+    /////Insert_Service_Test////////
     @Test
     public void insertControllerTest() throws JSONException {
         when(userMapper.insert(user)).thenReturn(1);
@@ -89,5 +91,88 @@ public class UserResourceControllerTest {
         ResponseEntity<User> response = restTemplate.postForEntity("http://localhost:" + String.valueOf(port) + "/user/resources/insert", request, User.class);
         assertEquals("Equal errors", HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
+    /////Delete_Service_Test////////
+    @Test
+    public void deleteControllerTest(){
+        when(userMapper.selectUserById(1)).thenReturn(new User());
+        when(userMapper.deleteUserById(1)).thenReturn(1);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Void> request = new HttpEntity<Void>( headers);
+        ResponseEntity<Void> response = restTemplate.postForEntity("http://localhost:" + String.valueOf(port) + "/user/resources/delete/1", request,Void.class);
+        assertEquals("Status code must be 200",200,response.getStatusCodeValue());
+    }
+    @Test
+    public void deleteControllerTest_NotFound(){
+        when(userMapper.selectUserById(1)).thenReturn(null);
+        when(userMapper.deleteUserById(1)).thenReturn(1);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Void> request = new HttpEntity<Void>( headers);
+        ResponseEntity<Void> response = restTemplate.postForEntity("http://localhost:" + String.valueOf(port) + "/user/resources/delete/1", request,Void.class);
+        assertEquals("Status code must be 404",404,response.getStatusCodeValue());
+    }
+    /////Update_Service_Test////////
+    @Test
+    public void updateController_Ok(){
+        user.setIduser(1);
+        when(userMapper.selectUserById(1)).thenReturn(user);
+        when(userMapper.updateUser(user)).thenReturn(1);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<User> request = new HttpEntity<User>(user,headers);
+        ResponseEntity<User> response = restTemplate.postForEntity("http://localhost:" + String.valueOf(port) + "/user/resources/updateUser", request,User.class);
+        assertEquals("Status code must be 200",200,response.getStatusCodeValue());
+        assertEquals("Same object",user,response.getBody());
+
+    }
+    @Test
+    public void updateController_BadFormat(){
+        user.setIduser(1);
+        user.setName(null);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<User> request = new HttpEntity<User>(user,headers);
+        ResponseEntity<User> response = restTemplate.postForEntity("http://localhost:" + String.valueOf(port) + "/user/resources/updateUser", request,User.class);
+        assertEquals("Status code must be 400",400,response.getStatusCodeValue());
+    }
+    @Test
+    public void updateController_NotFound(){
+        user.setIduser(1);
+        when(userMapper.selectUserById(1)).thenReturn(null);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<User> request = new HttpEntity<User>(user,headers);
+        ResponseEntity<User> response = restTemplate.postForEntity("http://localhost:" + String.valueOf(port) + "/user/resources/updateUser", request,User.class);
+        assertEquals("Status code must be 404",404,response.getStatusCodeValue());
+    }
+    /////SelectById_Test////////
+    @Test
+    public void selectByIdControllerTest_Ok(){
+        user.setIduser(1);
+        when(userMapper.selectUserById(1)).thenReturn(user);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Void> request = new HttpEntity<Void>(headers);
+        ResponseEntity<User> response = restTemplate.getForEntity("http://localhost:" + String.valueOf(port) + "/user/resources/getUserById/1",User.class);
+        assertEquals("Status code must be 200",200,response.getStatusCodeValue());
+        assertEquals("Espected user",user,response.getBody());
+    }
+    @Test
+    public void selectByIdControllerTest_NotFound(){
+        user.setIduser(1);
+        when(userMapper.selectUserById(1)).thenReturn(null);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Void> request = new HttpEntity<Void>(headers);
+        ResponseEntity<User> response = restTemplate.getForEntity("http://localhost:" + String.valueOf(port) + "/user/resources/getUserById/1",User.class);
+        assertEquals("Status code must be 404",404,response.getStatusCodeValue());
+    }
+
+
+
+
+
+
 
 }
