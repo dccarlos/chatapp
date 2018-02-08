@@ -38,7 +38,7 @@ public class UserResourceControllerTest {
 
     @Before
     public void initUnitTest() {
-        logger.info("Before Classs");
+        logger.info("Before");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate date = LocalDate.parse("2005-06-12", formatter);
         user = new User();
@@ -72,7 +72,6 @@ public class UserResourceControllerTest {
 
     @Test()
     public void insertControllerTest_DuplicatedKeyException() {
-
         when(userMapper.insert(user)).thenThrow(org.springframework.dao.DuplicateKeyException.class);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -82,8 +81,7 @@ public class UserResourceControllerTest {
     }
 
     @Test()
-    public void insertControllerTest_PresistenceErrorException() {
-
+    public void insertControllerTest_PersistenceErrorException() {
         when(userMapper.insert(user)).thenThrow(org.apache.ibatis.exceptions.PersistenceException.class);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
