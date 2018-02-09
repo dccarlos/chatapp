@@ -11,7 +11,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.xml.ws.Response;
 import java.util.List;
 
 @RestController
@@ -45,5 +44,41 @@ public class UserResourceController {
 
         }
         return new ResponseEntity<User>(user, HttpStatus.OK);
+    }
+
+    @GetMapping("/getUserById/{iduser}")
+    public ResponseEntity<User> getUserById(@PathVariable("iduser") Integer iduser) {
+        User user = userMapper.selectUserById(iduser);
+        if (user == null) {
+            logger.info("user with id to retrieve not found");
+            return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<User>(user, HttpStatus.OK);
+    }
+
+    @PutMapping("/updateUser")
+    private ResponseEntity<User> updateUser(@Valid @RequestBody User user, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            logger.warn("ocurred an error while validating");
+            return new ResponseEntity<User>(HttpStatus.BAD_REQUEST);
+        }
+        User currentUser = userMapper.selectUserById(user.getIduser());
+        if (currentUser == null) {
+            logger.info("user to update not found");
+            return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
+        }
+        userMapper.updateUser(user);
+        return new ResponseEntity<User>(user, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/delete/{iduser}")
+    private ResponseEntity<Void> delete(@PathVariable("iduser") Integer iduser) {
+        User currentUser = userMapper.selectUserById(iduser);
+        if (currentUser == null) {
+            logger.info("user to delete not found");
+            return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+        }
+        userMapper.deleteUserById(iduser);
+        return new ResponseEntity<Void>(HttpStatus.OK);
     }
 }
