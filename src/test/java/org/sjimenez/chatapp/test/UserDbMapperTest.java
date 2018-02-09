@@ -37,7 +37,7 @@ public class UserDbMapperTest {
 
     @Before
     public void initUnitTest() {
-        logger.info("BEFORE TEST");
+        logger.info("Before");
         userMapper.truncateTableUsers();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate date = LocalDate.parse("2005-06-12", formatter);
@@ -50,13 +50,43 @@ public class UserDbMapperTest {
     }
 
     @Test
-    public void insertUser_GodFormat() {
-        logger.info("INSERT TEST");
+    public void insertUser() {
+        logger.info("Insert user");
         userMapper.insert(user);
         List<User> list = userMapper.findAll();
         assertEquals("Compare returned id", 1, user.getIduser());
         assertEquals("total rows", 1, list.size());
     }
+
+    @Test
+    public void deleteUserById_(){
+        logger.info("Delete user test");
+        userMapper.insert(user);
+        userMapper.deleteUserById(1);
+        List<User> list = userMapper.findAll();
+        assertEquals("empty",0,list.size());
+    }
+    @Test
+    public void updateUserById(){
+        logger.info("Update user test");
+        userMapper.insert(user);
+        user.setName("jire");
+        userMapper.updateUser(user);
+        List<User> list = userMapper.findAll();
+        assertEquals("Compare returned id","jire",list.get(0).getName());
+        assertEquals("total rows", 1, list.size());
+    }
+    @Test
+    public void selectUserById(){
+        userMapper.insert(user);
+        User selectedUser=userMapper.selectUserById(1);
+        assertEquals("Equal objects",user,selectedUser);
+    }
+
+
+
+
+
 
 
 }
