@@ -4,6 +4,7 @@ import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import org.json.JSONException;
 import org.junit.*;
 import org.junit.runner.RunWith;
+import org.sjimenez.chatapp.dao.ChatDao;
 import org.sjimenez.chatapp.mappers.UserMapper;
 import org.sjimenez.chatapp.model.User;
 import org.slf4j.Logger;
@@ -33,6 +34,8 @@ public class UserResourceControllerTest {
     private TestRestTemplate restTemplate;
     @MockBean
     private UserMapper userMapper;
+    @MockBean
+    private ChatDao chatDao;
     @LocalServerPort
     private int port;
     private static final Logger logger = LoggerFactory.getLogger(UserDbMapperTest.class);
@@ -50,9 +53,9 @@ public class UserResourceControllerTest {
     }
 
     @Test
-    public void insertUserControllerTest_Ok() throws JSONException {
+    public void insertUserControllerTest_Ok() {
         logger.info("Insert user controller test-ok");
-        when(userMapper.insert(user)).thenReturn(1);
+        when(chatDao.insertUser(user)).thenReturn(1);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<User> request = new HttpEntity<User>(user, headers);
@@ -75,7 +78,7 @@ public class UserResourceControllerTest {
     @Test()
     public void insertUserControllerTest_DuplicatedKeyException() {
         logger.info("Insert user controller test-duplicated key exception");
-        when(userMapper.insert(user)).thenThrow(org.springframework.dao.DuplicateKeyException.class);
+        when(chatDao.insertUser(user)).thenThrow(org.springframework.dao.DuplicateKeyException.class);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<User> request = new HttpEntity<User>(user, headers);
@@ -86,7 +89,7 @@ public class UserResourceControllerTest {
     @Test()
     public void insertUserControllerTest_PersistenceErrorException() {
         logger.info("Insert user controller test-persistence error");
-        when(userMapper.insert(user)).thenThrow(org.apache.ibatis.exceptions.PersistenceException.class);
+        when(chatDao.insertUser(user)).thenThrow(org.springframework.dao.DataAccessException.class);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<User> request = new HttpEntity<User>(user, headers);
@@ -97,8 +100,8 @@ public class UserResourceControllerTest {
     @Test
     public void deleteUserControllerTest_Ok() {
         logger.info("delete user controller test-ok");
-        when(userMapper.selectUserById(1)).thenReturn(new User());
-        when(userMapper.deleteUserById(1)).thenReturn(1);
+        when(chatDao.selectUserById(1)).thenReturn(new User());
+        when(chatDao.deleteUserById(1)).thenReturn(1);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<Void> request = new HttpEntity<Void>(headers);
@@ -109,8 +112,8 @@ public class UserResourceControllerTest {
     @Test
     public void deleteUserControllerTest_NotFound() {
         logger.info("delete user controller test-not found");
-        when(userMapper.selectUserById(1)).thenReturn(null);
-        when(userMapper.deleteUserById(1)).thenReturn(1);
+        when(chatDao.selectUserById(1)).thenReturn(null);
+        when(chatDao.deleteUserById(1)).thenReturn(1);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<Void> request = new HttpEntity<Void>(headers);
@@ -122,8 +125,8 @@ public class UserResourceControllerTest {
     public void updateUserControllerTest_Ok() {
         logger.info("update user controller test-ok");
         user.setIduser(1);
-        when(userMapper.selectUserById(1)).thenReturn(user);
-        when(userMapper.updateUser(user)).thenReturn(1);
+        when(chatDao.selectUserById(1)).thenReturn(user);
+        when(chatDao.updateUser(user)).thenReturn(1);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<User> request = new HttpEntity<User>(user, headers);
@@ -149,7 +152,7 @@ public class UserResourceControllerTest {
     public void updateUserControllerTest_NotFound() {
         logger.info("update user controller test-not found");
         user.setIduser(1);
-        when(userMapper.selectUserById(1)).thenReturn(null);
+        when(chatDao.selectUserById(1)).thenReturn(null);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<User> request = new HttpEntity<User>(user, headers);
@@ -161,7 +164,7 @@ public class UserResourceControllerTest {
     public void selectUserByIdControllerTest_Ok() {
         logger.info("select user by id controller test-ok");
         user.setIduser(1);
-        when(userMapper.selectUserById(1)).thenReturn(user);
+        when(chatDao.selectUserById(1)).thenReturn(user);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<Void> request = new HttpEntity<Void>(headers);
@@ -174,7 +177,7 @@ public class UserResourceControllerTest {
     public void selectUserByIdControllerTest_NotFound() {
         logger.info("select user by id controller test-not found");
         user.setIduser(1);
-        when(userMapper.selectUserById(1)).thenReturn(null);
+        when(chatDao.selectUserById(1)).thenReturn(null);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<Void> request = new HttpEntity<Void>(headers);

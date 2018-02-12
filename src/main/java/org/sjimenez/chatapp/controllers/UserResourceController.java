@@ -1,5 +1,6 @@
 package org.sjimenez.chatapp.controllers;
 
+import org.sjimenez.chatapp.dao.ChatDao;
 import org.sjimenez.chatapp.mappers.UserMapper;
 import org.sjimenez.chatapp.model.User;
 import org.slf4j.Logger;
@@ -19,36 +20,36 @@ public class UserResourceController {
     private static final Logger logger = LoggerFactory.getLogger(UserResourceController.class);
 
     @Autowired
+    private ChatDao chatDao;
     private UserMapper userMapper;
 
     @GetMapping("/all")
     public List<User> getAll() {
-        return userMapper.findAll();
+        return chatDao.findAll();
     }
 
     @PostMapping("/insert")
     public ResponseEntity<User> insert(@Valid @RequestBody User user, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            logger.warn("ocurred an error while validating");
+            logger.warn("ocurred an error while validating request data");
             return new ResponseEntity<User>(HttpStatus.BAD_REQUEST);
         }
         try {
-            userMapper.insert(user);
-        } catch (org.apache.ibatis.exceptions.PersistenceException ex) {
+            chatDao.insertUser(user);
+        } catch (org.springframework.dao.DataAccessException ex) {
+            if (ex.contains(org.springframework.dao.DuplicateKeyException.class)) {
+                logger.error("Duplicated keys error" + ex);
+                return new ResponseEntity<User>(HttpStatus.CONFLICT);
+            }
             logger.error("Error when inserting in database" + ex);
             return new ResponseEntity<User>(HttpStatus.INTERNAL_SERVER_ERROR);
-
-        } catch (org.springframework.dao.DuplicateKeyException ex) {
-            logger.error("Duplicated keys error" + ex);
-            return new ResponseEntity<User>(HttpStatus.CONFLICT);
-
         }
         return new ResponseEntity<User>(user, HttpStatus.OK);
     }
 
     @GetMapping("/getUserById/{iduser}")
     public ResponseEntity<User> getUserById(@PathVariable("iduser") Integer iduser) {
-        User user = userMapper.selectUserById(iduser);
+        User user = chatDao.selectUserById(iduser);
         if (user == null) {
             logger.info("user with id to retrieve not found");
             return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
@@ -59,26 +60,26 @@ public class UserResourceController {
     @PutMapping("/updateUser")
     private ResponseEntity<User> updateUser(@Valid @RequestBody User user, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            logger.warn("ocurred an error while validating");
+            logger.warn("ocurred an error while validating request data");
             return new ResponseEntity<User>(HttpStatus.BAD_REQUEST);
         }
-        User currentUser = userMapper.selectUserById(user.getIduser());
+        User currentUser = chatDao.selectUserById(user.getIduser());
         if (currentUser == null) {
             logger.info("user to update not found");
             return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
         }
-        userMapper.updateUser(user);
+        chatDao.updateUser(user);
         return new ResponseEntity<User>(user, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{iduser}")
     private ResponseEntity<Void> delete(@PathVariable("iduser") Integer iduser) {
-        User currentUser = userMapper.selectUserById(iduser);
+        User currentUser = chatDao.selectUserById(iduser);
         if (currentUser == null) {
             logger.info("user to delete not found");
             return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
         }
-        userMapper.deleteUserById(iduser);
+        chatDao.deleteUserById(iduser);
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
 }
