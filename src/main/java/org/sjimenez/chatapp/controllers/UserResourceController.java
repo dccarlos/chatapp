@@ -30,6 +30,9 @@ public class UserResourceController {
 
     @PostMapping("/insert")
     public ResponseEntity<User> insert(@Valid @RequestBody User user, BindingResult bindingResult) {
+
+        System.out.println(user);
+        logger.warn("touched");
         if (bindingResult.hasErrors()) {
             logger.warn("ocurred an error while validating request data");
             return new ResponseEntity<User>(HttpStatus.BAD_REQUEST);

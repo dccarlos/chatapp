@@ -164,8 +164,8 @@ let SingInFormModal = (function() {
     }
     onClickCloseSaveUserModal() {
 
-      var url = "http://localhost:8080/saveUserData";
-      var name = this.refs.NameTextForm.state.userName;
+      var url = "http://localhost:8080/user/resources/insert";
+      var name = this.refs.NameTextForm.state.name;
       var lastName = this.refs.LastNameTextForm.state.lastName;
       var mail = this.refs.EmailTextForm.state.email;
       var nickname = this.refs.NicknameTextForm.state.nickname;
@@ -174,8 +174,8 @@ let SingInFormModal = (function() {
         name: name,
         lastName: lastName,
         mail: mail,
-        nickname: nickname,
-        birthdate: birthdate
+        birthdate: birthdate,
+        nickname: nickname
       };
 
       fetch(url, {
@@ -185,20 +185,17 @@ let SingInFormModal = (function() {
           "Content-Type": "application/json"
         })
       })
-        .then(res => res.json())
+        .then(res => res.text())
         .then(response => {
-          //console.log("response:", response);
+          console.log("response:", response);
         })
         .catch(error =>{
              console.error("Errorrr:", error)
              console.dir(error)
              console.log(error)
             
-            })
-        
-        
-        ;
-      this.props.closeSignIn({ show: false });
+            });
+      this.props.closeSignIn();
     }
 
     render() {
