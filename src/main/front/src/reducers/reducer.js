@@ -1,7 +1,6 @@
-//reducer.js
+'use strict'
 import { combineReducers } from 'redux';
 
-// reducer.js
 export const geod = (state = {}, action) => {
     switch (action.type) {
         case 'ACTIVATE_GEOD': {
@@ -15,18 +14,14 @@ export const geod = (state = {}, action) => {
             return state;
     }
 };
-
 export const showModel = (state = { show: false }, action) => {
     switch (action.type) {
         case 'CLOSE_SIGN_IN': {
-            console.log('close')
-            return {show:true};
+            return {show:false};
         }
-        case 'SHOW_SIGN_IN':
-            {
-                console.log('show')
+        case 'SHOW_SIGN_IN': {
                 return {show:true};
-            }
+        }
         default:
             return state;
     }

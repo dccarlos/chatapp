@@ -1,4 +1,4 @@
-// actions.js
+'use strict'
 export const activateGeod = geod => ({
     type: "ACTIVATE_GEOD",
     geod
@@ -11,11 +11,12 @@ export const activateGeod = geod => ({
   ///
   export const showSignIn = () => ({
     type: "SHOW_SIGN_IN",
-    show:true
   });
   
-  export const closeSignIn = show => ({
+  export const closeSignIn = () => ({
     type: "CLOSE_SIGN_IN",
-    show
   });
+
+
+
   

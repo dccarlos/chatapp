@@ -22,6 +22,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 
@@ -82,6 +83,13 @@ public class UserDbMapperTest {
         logger.info("Select user by id test");
         userMapper.insert(user);
         User selectedUser = userMapper.selectUserById(1);
+        assertEquals("Equal objects", user, selectedUser);
+    }
+    @Test
+    public void selectUserByMail() {
+        logger.info("Select user by id test");
+        userMapper.insert(user);
+        User selectedUser = userMapper.selectUserByMail("sjc@gmail.com");
         assertEquals("Equal objects", user, selectedUser);
     }
 }
