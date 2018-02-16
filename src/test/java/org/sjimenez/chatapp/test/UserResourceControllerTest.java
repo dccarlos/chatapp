@@ -1,8 +1,10 @@
 package org.sjimenez.chatapp.test;
 
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import org.json.JSONException;
 import org.junit.*;
 import org.junit.runner.RunWith;
+import org.sjimenez.chatapp.dao.ChatDao;
 import org.sjimenez.chatapp.mappers.UserMapper;
 import org.sjimenez.chatapp.model.User;
 import org.slf4j.Logger;
@@ -32,13 +34,14 @@ public class UserResourceControllerTest {
     private TestRestTemplate restTemplate;
     @MockBean
     private UserMapper userMapper;
+    @MockBean
+    private ChatDao chatDao;
     @LocalServerPort
     private int port;
     private static final Logger logger = LoggerFactory.getLogger(UserDbMapperTest.class);
 
     @Before
     public void initUnitTest() {
-        logger.info("Before Classs");
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate date = LocalDate.parse("2005-06-12", formatter);
         user = new User();
@@ -48,43 +51,138 @@ public class UserResourceControllerTest {
         user.setNickname("jackiechun");
         user.setBirthdate(date);
     }
+
     @Test
-    public void insertControllerTest() throws JSONException {
-        when(userMapper.insert(user)).thenReturn(1);
+    public void insertUserControllerTest_Ok() {
+        logger.info("Insert user controller test-ok");
+        when(chatDao.insertUser(user)).thenReturn(1);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<User> request = new HttpEntity<User>(user, headers);
         ResponseEntity<User> response = restTemplate.postForEntity("http://localhost:" + String.valueOf(port) + "/user/resources/insert", request, User.class);
         assertEquals("son iguales", user, response.getBody());
-        assertEquals("Expected http response 200",HttpStatus.OK,response.getStatusCode());
+        assertEquals("Expected http response 200", HttpStatus.OK, response.getStatusCode());
     }
+
     @Test
-    public void insertControllerTest_BadFormatOrNull() {
+    public void insertUserControllerTest_BadFormatOrNull() {
+        logger.info("Insert user controller test-Bad format or null");
         user.setMail("it");
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<User> request = new HttpEntity<User>(user, headers);
         ResponseEntity<User> response = restTemplate.postForEntity("http://localhost:" + String.valueOf(port) + "/user/resources/insert", request, User.class);
-        System.out.println("RESPONSE"+response);
-        assertEquals("Expected http response 400",HttpStatus.BAD_REQUEST,response.getStatusCode());
+        assertEquals("Expected http response 400", HttpStatus.BAD_REQUEST, response.getStatusCode());
     }
+
     @Test()
-    public void insertControllerTest_DuplicatedKeyException() {
-        when(userMapper.insert(user)).thenThrow(org.springframework.dao.DuplicateKeyException.class);
+    public void insertUserControllerTest_DuplicatedKeyException() {
+        logger.info("Insert user controller test-duplicated key exception");
+        when(chatDao.insertUser(user)).thenThrow(org.springframework.dao.DuplicateKeyException.class);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<User> request = new HttpEntity<User>(user, headers);
         ResponseEntity<User> response = restTemplate.postForEntity("http://localhost:" + String.valueOf(port) + "/user/resources/insert", request, User.class);
         assertEquals("Expected http response 409", HttpStatus.CONFLICT, response.getStatusCode());
     }
+
     @Test()
-    public void insertControllerTest_PresistenceErrorException() {
-        when(userMapper.insert(user)).thenThrow(org.apache.ibatis.exceptions.PersistenceException.class);
+    public void insertUserControllerTest_PersistenceErrorException() {
+        logger.info("Insert user controller test-persistence error");
+        when(chatDao.insertUser(user)).thenThrow(org.springframework.dao.DataAccessException.class);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<User> request = new HttpEntity<User>(user, headers);
         ResponseEntity<User> response = restTemplate.postForEntity("http://localhost:" + String.valueOf(port) + "/user/resources/insert", request, User.class);
         assertEquals("Expected http response 500", HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    }
+
+    @Test
+    public void deleteUserControllerTest_Ok() {
+        logger.info("delete user controller test-ok");
+        when(chatDao.selectUserById(1)).thenReturn(new User());
+        when(chatDao.deleteUserById(1)).thenReturn(1);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Void> request = new HttpEntity<Void>(headers);
+        ResponseEntity<User> response = restTemplate.exchange("http://localhost:" + String.valueOf(port) + "/user/resources/delete/1", HttpMethod.DELETE, request, User.class);
+        assertEquals("Status code must be 200", HttpStatus.OK, response.getStatusCode());
+    }
+
+    @Test
+    public void deleteUserControllerTest_NotFound() {
+        logger.info("delete user controller test-not found");
+        when(chatDao.selectUserById(1)).thenReturn(null);
+        when(chatDao.deleteUserById(1)).thenReturn(1);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Void> request = new HttpEntity<Void>(headers);
+        ResponseEntity<User> response = restTemplate.exchange("http://localhost:" + String.valueOf(port) + "/user/resources/delete/1", HttpMethod.DELETE, request, User.class);
+        assertEquals("Status code must be 404", HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    public void updateUserControllerTest_Ok() {
+        logger.info("update user controller test-ok");
+        user.setIduser(1);
+        when(chatDao.selectUserById(1)).thenReturn(user);
+        when(chatDao.updateUser(user)).thenReturn(1);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<User> request = new HttpEntity<User>(user, headers);
+        ResponseEntity<User> response = restTemplate.exchange("http://localhost:" + String.valueOf(port) + "/user/resources/updateUser", HttpMethod.PUT, request, User.class);
+        assertEquals("Status code must be 200", HttpStatus.OK, response.getStatusCode());
+        assertEquals("Same object", user, response.getBody());
+
+    }
+
+    @Test
+    public void updateUserControllerTest_BadFormat() {
+        logger.info("update user controller test-bad format");
+        user.setIduser(1);
+        user.setName(null);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<User> request = new HttpEntity<User>(user, headers);
+        ResponseEntity<User> response = restTemplate.exchange("http://localhost:" + String.valueOf(port) + "/user/resources/updateUser", HttpMethod.PUT, request, User.class);
+        assertEquals("Status code must be 400", HttpStatus.BAD_REQUEST, response.getStatusCode());
+    }
+
+    @Test
+    public void updateUserControllerTest_NotFound() {
+        logger.info("update user controller test-not found");
+        user.setIduser(1);
+        when(chatDao.selectUserById(1)).thenReturn(null);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<User> request = new HttpEntity<User>(user, headers);
+        ResponseEntity<User> response = restTemplate.exchange("http://localhost:" + String.valueOf(port) + "/user/resources/updateUser", HttpMethod.PUT, request, User.class);
+        assertEquals("Status code must be 404", HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+    @Test
+    public void selectUserByIdControllerTest_Ok() {
+        logger.info("select user by id controller test-ok");
+        user.setIduser(1);
+        when(chatDao.selectUserById(1)).thenReturn(user);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Void> request = new HttpEntity<Void>(headers);
+        ResponseEntity<User> response = restTemplate.getForEntity("http://localhost:" + String.valueOf(port) + "/user/resources/getUserById/1", User.class);
+        assertEquals("Status code must be 200", HttpStatus.OK, response.getStatusCode());
+        assertEquals("Espected user", user, response.getBody());
+    }
+
+    @Test
+    public void selectUserByIdControllerTest_NotFound() {
+        logger.info("select user by id controller test-not found");
+        user.setIduser(1);
+        when(chatDao.selectUserById(1)).thenReturn(null);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Void> request = new HttpEntity<Void>(headers);
+        ResponseEntity<User> response = restTemplate.getForEntity("http://localhost:" + String.valueOf(port) + "/user/resources/getUserById/1", User.class);
+        assertEquals("Status code must be 404", HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
 }
