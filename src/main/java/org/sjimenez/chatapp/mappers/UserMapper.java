@@ -1,10 +1,10 @@
 package org.sjimenez.chatapp.mappers;
 
-import org.sjimenez.chatapp.model.User;
-import org.apache.ibatis.annotations.*;
+        import org.sjimenez.chatapp.model.User;
+        import org.apache.ibatis.annotations.*;
 
-import java.util.List;
-import java.util.Optional;
+        import java.util.List;
+        import java.util.Optional;
 
 @Mapper
 public interface UserMapper {
