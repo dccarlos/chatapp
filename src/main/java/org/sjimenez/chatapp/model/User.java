@@ -1,6 +1,7 @@
 package org.sjimenez.chatapp.model;
 
 import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotNull;
@@ -10,15 +11,19 @@ import java.util.Objects;
 public class User {
 
     private int iduser;
+    @NotEmpty(message = "Name cannot be null")
     @NotNull(message = "Name cannot be null")
     private String name;
+    @NotEmpty
     @NotNull(message = "lastName cannot be null")
     private String lastName;
+    @NotEmpty
     @NotNull(message = "Email cannot be null")
     @Email(message = "Email should be valid")
     private String mail;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthdate;
+    @NotEmpty
     @NotNull(message = "nickName cannot be null")
     private String nickname;
 

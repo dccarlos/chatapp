@@ -1,8 +1,10 @@
 package org.sjimenez.chatapp.mappers;
-import org.sjimenez.chatapp.model.User;
-import org.apache.ibatis.annotations.*;
 
-import java.util.List;
+        import org.sjimenez.chatapp.model.User;
+        import org.apache.ibatis.annotations.*;
+
+        import java.util.List;
+        import java.util.Optional;
 
 @Mapper
 public interface UserMapper {
@@ -25,6 +27,9 @@ public interface UserMapper {
 
     @Select("SELECT iduser,name,lastName,mail,nickName,birthdate from user WHERE iduser = #{iduser}")
     User selectUserById(int id);
+
+    @Select("SELECT iduser,name,lastName,mail,nickName,birthdate from user WHERE mail = #{mail}")
+    User selectUserByMail(String mail);
 
     @Update("TRUNCATE TABLE user; ALTER TABLE user ALTER COLUMN iduser RESTART WITH 1")
     void truncateTableUsers();

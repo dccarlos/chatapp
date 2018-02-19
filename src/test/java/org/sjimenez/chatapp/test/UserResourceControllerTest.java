@@ -21,6 +21,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
@@ -76,9 +77,9 @@ public class UserResourceControllerTest {
     }
 
     @Test()
-    public void insertUserControllerTest_DuplicatedKeyException() {
-        logger.info("Insert user controller test-duplicated key exception");
-        when(chatDao.insertUser(user)).thenThrow(org.springframework.dao.DuplicateKeyException.class);
+    public void insertUserControllerTest_DuplicatedMail() {
+        logger.info("Insert user controller test-duplicated key");
+        when(chatDao.selectUserByMail(user.getMail())).thenReturn(user);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<User> request = new HttpEntity<User>(user, headers);
@@ -100,7 +101,7 @@ public class UserResourceControllerTest {
     @Test
     public void deleteUserControllerTest_Ok() {
         logger.info("delete user controller test-ok");
-        when(chatDao.selectUserById(1)).thenReturn(new User());
+        when(chatDao.selectUserById(1)).thenReturn(user);
         when(chatDao.deleteUserById(1)).thenReturn(1);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);

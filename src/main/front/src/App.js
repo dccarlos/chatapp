@@ -1,22 +1,37 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+"use strict";
+import React, { Component } from "react";
+import { connect } from "react-redux";
 
-class App extends Component {
+import {showSignIn } from "./actions/actions";
+import SingInFormModal from "./components/modals/SingInFormModal";
+import { Panel, Button, ListGroup, ListGroupItem } from "react-bootstrap";
+
+import "./App.css";
+
+export class App extends Component {
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Hello reactive world</h1>
-          <button>button</button>
+      <div>
+        <header>
+          <Panel>
+            <Button onClick={this.props.showSignIn}>SingIn</Button>
+            <Button>LogIn</Button>
+          </Panel>
         </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+        <SingInFormModal />
       </div>
     );
   }
 }
 
-export default App;
+
+const mapStateToProps = (state, ownProps) => ({
+  shoModal: state.showModal
+});
+
+const mapDispatchToProps = {
+  showSignIn,
+};
+
+const AppContainer = connect(mapStateToProps, mapDispatchToProps)(App);
+export default AppContainer;

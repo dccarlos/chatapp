@@ -16,14 +16,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class chatDaoTest {
-
-
     private User user;
     @Autowired
     ChatDao chatDao;
@@ -78,6 +77,14 @@ public class chatDaoTest {
         logger.info("Select user by id test");
         chatDao.insertUser(user);
         User selectedUser = chatDao.selectUserById(1);
+        assertEquals("Equal objects", user, selectedUser);
+    }
+
+    @Test
+    public void selectUserByMail() {
+        logger.info("Select user by id test");
+        chatDao.insertUser(user);
+        User selectedUser = chatDao.selectUserByMail("sjc@gmail.com");
         assertEquals("Equal objects", user, selectedUser);
     }
 }
