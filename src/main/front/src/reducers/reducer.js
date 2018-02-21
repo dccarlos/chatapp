@@ -1,5 +1,6 @@
 "use strict";
 import { combineReducers } from "redux";
+import { syncHistoryWithStore, routerReducer } from 'react-router-redux'
 export const showModel = (state = { show: false }, action) => {
   switch (action.type) {
     case "CLOSE_SIGN_IN": {
@@ -13,6 +14,9 @@ export const showModel = (state = { show: false }, action) => {
   }
 };
 
+
+
 export const reducers = combineReducers({
   showModel,
+  routing:routerReducer
 });

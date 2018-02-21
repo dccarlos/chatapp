@@ -153,6 +153,7 @@ let SingInFormModal = (function() {
     };
   })();
 
+
   return class AppSaveUserModal extends React.Component {
     constructor(props) {
       super(props);
