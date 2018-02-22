@@ -17,14 +17,10 @@ export class App extends Component {
       <div>
         <header>
           <Panel>
-            <Link to="/">Home</Link>
-            <Link to="/about">About</Link>
             <Button onClick={this.props.showSignIn}>SingIn</Button>
             <Button>LogIn</Button>
           </Panel>
         </header>
-        <Route exact path="/" component={About} />
-        <Route exact path="/about" component={About} />
         <SingInFormModal />
       </div>
     );

@@ -9,6 +9,7 @@ import { ConnectedRouter } from 'react-router-redux'
 import { store} from "./store/store";
 import { Router, Route, browserHistory } from 'react-router'
 import { syncHistoryWithStore, routerReducer } from 'react-router-redux'
+import About from "./components/About"
 
 
 
@@ -16,13 +17,11 @@ import { syncHistoryWithStore, routerReducer } from 'react-router-redux'
 const history = syncHistoryWithStore(browserHistory, store)
 
 
-
+//App />
 ReactDOM.render(
 
   <Provider store={store}>
-    <Router history={history}>
-    <App />
-    </Router>
+  
   </Provider>,
   document.getElementById("root")
 );
