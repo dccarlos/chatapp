@@ -10,7 +10,9 @@ export const history = createHistory()
 
 export function configureStore(initialState = {}) {
   const store = createStore(reducers,undefined,compose(applyMiddleware(routerMiddleware(history))));
-  console.log('store')
+  console.log(reducers)
   return store;
 }
+
+console.log(configureStore())
 export const store = configureStore();

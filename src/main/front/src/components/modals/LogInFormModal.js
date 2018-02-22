@@ -9,82 +9,14 @@ import {
   Modal,
   Button
 } from "react-bootstrap";
-import { showSignIn, closeSignIn } from "../../actions/actions";
 import {
   isValidUserName,
   isValidPassword,
   isValidEmail
 } from "../../util/AppUtils";
-import BirthdatePicker from "../DatePicker";
+import { showLogIn, closeLogIn } from "../../actions/actions";
 
-let SingInFormModal = (function() {
-  let NameTextForm = (function() {
-    return class NameTextForm extends React.Component {
-      constructor(props) {
-        super(props);
-        this.state = { name: "" };
-        this.handleNameChange = this.handleNameChange.bind(this);
-      }
-      getLoginNameValidationState() {
-        if (isValidUserName(this.state.name)) return "success";
-        else return "error";
-      }
-      handleNameChange(e) {
-        this.setState({ name: e.target.value });
-      }
-      render() {
-        
-        return (
-          <div>
-            <FormGroup validationState={this.getLoginNameValidationState()}>
-              <ControlLabel>Name</ControlLabel>
-              <FormControl
-                type="text"
-                value={this.state.name}
-                placeholder="Enter name"
-                onChange={this.handleNameChange}
-              />
-              <FormControl.Feedback />
-            </FormGroup>
-          </div>
-        );
-      }
-    };
-  })();
-  let LastNameTextForm = (function() {
-    return class LastNameTextForm extends React.Component {
-      constructor(props) {
-        super(props);
-        this.state = { lastName: "" };
-        this.handleLastNameChange = this.handleLastNameChange.bind(this);
-      }
-      getLoginLastNameValidationState() {
-        if (isValidUserName(this.state.lastName)) return "success";
-        else return "error";
-      }
-      handleLastNameChange(e) {
-        this.setState({
-          lastName: e.target.value
-        });
-      }
-      render() {
-        return (
-          <div>
-            <FormGroup validationState={this.getLoginLastNameValidationState()}>
-              <ControlLabel> Last Name</ControlLabel>
-              <FormControl
-                type="text"
-                value={this.state.lastName}
-                placeholder="Enter last name"
-                onChange={this.handleLastNameChange}
-              />
-              <FormControl.Feedback />
-            </FormGroup>
-          </div>
-        );
-      }
-    };
-  })();
+let LogInFormModal = (function() {
   let EmailTextForm = (function() {
     return class EmailTextForm extends React.Component {
       constructor(props) {
@@ -154,29 +86,34 @@ let SingInFormModal = (function() {
     };
   })();
 
-
-  return class AppSaveUserModal extends React.Component {
+  return class AppLogInModal extends React.Component {
     constructor(props) {
       super(props);
-      this.onClickSaveUserModal = this.onClickSaveUserModal.bind(this);
-      this.onClickCloseSaveUserModal = this.onClickCloseSaveUserModal.bind(this);
+      this.onClickLogInModal = this.onClickLogInModal.bind(this);
+      this.onClickCloseLogInModal = this.onClickCloseLogInModal.bind(this);
     }
     validateFieldsToSave(data) {
-      if (isValidUserName(data.name) && isValidUserName(data.lastName) && isValidUserName(data.nickname) && isValidEmail(data.mail)) return true;
+      if (
+        isValidUserName(data.nickname) &&
+        isValidEmail(data.mail)
+      )
+        return true;
       return false;
     }
-    retrieveDataToSaveUser() {
-      var name = this.refs.NameTextForm.state.name;
-      var lastName = this.refs.LastNameTextForm.state.lastName;
+    retrieveDataToLogInUser() {
+
       var mail = this.refs.EmailTextForm.state.email;
       var nickname = this.refs.NicknameTextForm.state.nickname;
-      var birthdate = this.refs.BirthdatePicker.state.startDate.format("YYYY-MM-DD");
-      return { name: name, lastName: lastName, mail: mail, birthdate: birthdate, nickname: nickname };
+      return {
+
+        username: mail,
+        password: nickname
+      };
     }
 
-    onClickSaveUserModal() {
+    onClickLogInModal() {
       var url = "http://localhost:8080/user/resources/insert";
-      var data = this.retrieveDataToSaveUser();
+      var data = this.retrieveDataToLogInUser();
 
       if (!this.validateFieldsToSave(data)) {
         window.alert("Complete los campos de manera correcta");
@@ -192,7 +129,7 @@ let SingInFormModal = (function() {
       })
         .then(response => {
           if (!response.ok) {
-            this.saveUserErrorManager(response.status);
+            this.logInErrorManager(response.status);
             throw Error(response.statusText);
           }
           return response;
@@ -207,10 +144,12 @@ let SingInFormModal = (function() {
       this.props.closeSignIn();
     }
 
-    saveUserErrorManager(errorCode) {
+    logInErrorManager(errorCode) {
       switch (errorCode) {
         case 400: {
-          window.alert("Bad request please check that you are sending the field in the right way");
+          window.alert(
+            "Bad request please check that you are sending the field in the right way"
+          );
           break;
         }
         case 409: {
@@ -227,45 +166,45 @@ let SingInFormModal = (function() {
       }
     }
 
-    onClickCloseSaveUserModal() {
-      this.props.closeSignIn();
+    onClickCloseLogInModal() {
+      this.props.closeLogIn();
     }
+
+    //show={this.props.showLogInModel.showLogInState}
     render() {
-      return <Modal show={this.props.showModel.show}>
+      console.log("render");
+      return (
+        <Modal show={this.props.showLogInModel.showLogInState}>
           <Modal.Header>
-            <Modal.Title>Save user Modal</Modal.Title>
+            <Modal.Title>LogIn Modal</Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <form>
-              <NameTextForm ref="NameTextForm" />
-              <LastNameTextForm ref="LastNameTextForm" />
               <EmailTextForm ref="EmailTextForm" />
               <NicknameTextForm ref="NicknameTextForm" />
-              <BirthdatePicker ref="BirthdatePicker" />
             </form>
           </Modal.Body>
           <Modal.Footer>
-            <Button onClick={this.onClickCloseSaveUserModal}>Cancel</Button>
-            <Button onClick={this.onClickSaveUserModal}>
-              save user modal
-            </Button>
+            <Button onClick={this.onClickCloseLogInModal}>Cancel</Button>
+            <Button onClick={this.onClickLogInModal}>LogIn</Button>
           </Modal.Footer>
-        </Modal>;
+        </Modal>
+      );
     }
   };
 })();
 
 const mapStateToProps = (state, ownProps) => ({
-  showModel: state.showModel,
+  showLogInModel: state.showLogInModel
 });
 
 const mapDispatchToProps = {
-  showSignIn,
-  closeSignIn
+  showLogIn,
+  closeLogIn
 };
 
 const AppContainer = connect(mapStateToProps, mapDispatchToProps)(
-  SingInFormModal
+  LogInFormModal
 );
 
 export default AppContainer;

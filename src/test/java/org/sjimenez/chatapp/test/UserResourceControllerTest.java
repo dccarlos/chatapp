@@ -28,7 +28,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class UserResourceControllerTest {
+@Ignore public class UserResourceControllerTest {
     static private User user;
 
     @Autowired

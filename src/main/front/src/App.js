@@ -3,8 +3,9 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 
-import { showSignIn } from "./actions/actions";
+import { showSignIn,showLogIn } from "./actions/actions";
 import SingInFormModal from "./components/modals/SingInFormModal";
+import LogInFormModal from "./components/modals/LogInFormModal";
 import { Panel, Button, ListGroup, ListGroupItem } from "react-bootstrap";
 import About from "./components/About"
 import { Routes,Route} from 'react-router'
@@ -12,27 +13,44 @@ import { Routes,Route} from 'react-router'
 import "./App.css";
 
 export class App extends Component {
+  constructor(props) {
+    super(props);
+    this.changeToChat = this.changeToChat.bind(this);
+  }
+  changeToChat() {
+
+    this.props.history.push('/chat')
+    console.log(this)
+  }
   render() {
+
+
+console.log(this)
+console.dir(this)
+
     return (
       <div>
         <header>
           <Panel>
-            <Button onClick={this.props.showSignIn}>SingIn</Button>
-            <Button>LogIn</Button>
+          <Button onClick={this.props.showLogIn}>LogIn</Button>
+          <Button onClick={this.props.showSignIn}>SingIn</Button>     
           </Panel>
         </header>
         <SingInFormModal />
+        <LogInFormModal />
       </div>
     );
   }
 }
 
 const mapStateToProps = (state, ownProps) => ({
-  shoModal: state.showModal
+  shoModal: state.showModel,
+  showLogInModel:state.showLogInModel
 });
 
 const mapDispatchToProps = {
-  showSignIn
+  showSignIn,
+  showLogIn
 };
 
 const AppContainer = connect(mapStateToProps, mapDispatchToProps)(App);
