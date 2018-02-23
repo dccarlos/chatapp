@@ -15,6 +15,7 @@ import {
   isValidEmail
 } from "../../util/AppUtils";
 import { showLogIn, closeLogIn } from "../../actions/actions";
+import { Base64 } from 'js-base64';
 
 let LogInFormModal = (function() {
   let EmailTextForm = (function() {
@@ -94,8 +95,8 @@ let LogInFormModal = (function() {
     }
     validateFieldsToSave(data) {
       if (
-        isValidUserName(data.nickname) &&
-        isValidEmail(data.mail)
+        isValidUserName(data.password) &&
+        isValidEmail(data.username)
       )
         return true;
       return false;
@@ -104,6 +105,9 @@ let LogInFormModal = (function() {
 
       var mail = this.refs.EmailTextForm.state.email;
       var nickname = this.refs.NicknameTextForm.state.nickname;
+
+console.log("email"+mail+"nick"+nickname)
+
       return {
 
         username: mail,
@@ -111,8 +115,10 @@ let LogInFormModal = (function() {
       };
     }
 
+
+
     onClickLogInModal() {
-      var url = "http://localhost:8080/user/resources/insert";
+      var url = "http://localhost:8080/";
       var data = this.retrieveDataToLogInUser();
 
       if (!this.validateFieldsToSave(data)) {
@@ -120,11 +126,15 @@ let LogInFormModal = (function() {
         return;
       }
 
+
+      const basicAuth='Basic ' + Base64.encode(data.username + ":" + data.password);
+/*
       fetch(url, {
-        method: "POST",
-        body: JSON.stringify(data),
+        method: "GET",
+        credentials: 'include',
         headers: new Headers({
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          "Authorization": basicAuth
         })
       })
         .then(response => {
@@ -141,7 +151,44 @@ let LogInFormModal = (function() {
         .catch(error => {
           console.error("Error:", error);
         });
-      this.props.closeSignIn();
+      this.props.closeLogIn();
+
+      */
+      var formData = new FormData()
+formData.append("username",data.username);
+formData.append("password",data.password);
+      
+      fetch(url, {
+        method: "POST",
+        credentials: 'include',
+        headers: new Headers({
+            
+            "Accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8"
+            
+          }),
+        body: formData,
+      }).then(response => {
+          if (!response.ok) {
+            this.logInErrorManager(response.status);
+            throw Error(response.statusText);
+          }
+          return response;
+        })
+        .then(res => res.json())
+        .then(response => {
+          console.log("response:", response);
+        })
+        .catch(error => {
+          console.error("Error:", error);
+        });
+      this.props.closeLogIn();
+      /*
+
+
+
+      */
+      
+      
     }
 
     logInErrorManager(errorCode) {

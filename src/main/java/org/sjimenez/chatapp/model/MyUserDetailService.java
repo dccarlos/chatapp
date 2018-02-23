@@ -1,6 +1,7 @@
 package org.sjimenez.chatapp.model;
 
 import org.sjimenez.chatapp.dao.ChatDao;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -21,6 +22,7 @@ public class MyUserDetailService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) {
+        System.out.println("userdetailservice");
         final org.sjimenez.chatapp.model.User user = chatDao.selectUserByMail(username);
         if (user == null) {
             throw new UsernameNotFoundException("user not found");

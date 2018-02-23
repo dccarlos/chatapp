@@ -2,6 +2,7 @@ package org.sjimenez.chatapp.test;
 
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sjimenez.chatapp.dao.ChatDao;
@@ -22,7 +23,7 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class chatDaoTest {
+@Ignore public class chatDaoTest {
     private User user;
     @Autowired
     ChatDao chatDao;

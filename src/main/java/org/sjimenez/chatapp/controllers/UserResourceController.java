@@ -30,6 +30,11 @@ public class UserResourceController {
         return chatDao.findAll();
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<User> login() {
+        return new ResponseEntity<User>(HttpStatus.OK);
+    }
+
     @PostMapping("/insert")
     public ResponseEntity<User> insert(@Valid @RequestBody User user, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
