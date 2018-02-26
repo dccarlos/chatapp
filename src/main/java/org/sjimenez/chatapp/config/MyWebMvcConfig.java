@@ -13,7 +13,6 @@ public class MyWebMvcConfig {
         return new WebMvcConfigurerAdapter() {
             @Override
             public void addViewControllers(ViewControllerRegistry registry) {
-                // forward requests to /admin and /user to their index.html
                 registry.addViewController("/").setViewName(
                         "forward:/index.html");
                 registry.addViewController("/chat").setViewName(

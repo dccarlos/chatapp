@@ -15,7 +15,7 @@ import {
   isValidEmail
 } from "../../util/AppUtils";
 import { showLogIn, closeLogIn } from "../../actions/actions";
-import { Base64 } from 'js-base64';
+import { Base64 } from "js-base64";
 
 let LogInFormModal = (function() {
   let EmailTextForm = (function() {
@@ -94,28 +94,21 @@ let LogInFormModal = (function() {
       this.onClickCloseLogInModal = this.onClickCloseLogInModal.bind(this);
     }
     validateFieldsToSave(data) {
-      if (
-        isValidUserName(data.password) &&
-        isValidEmail(data.username)
-      )
+      if (isValidUserName(data.password) && isValidEmail(data.username))
         return true;
       return false;
     }
     retrieveDataToLogInUser() {
-
       var mail = this.refs.EmailTextForm.state.email;
       var nickname = this.refs.NicknameTextForm.state.nickname;
 
-console.log("email"+mail+"nick"+nickname)
+      console.log("email" + mail + "nick" + nickname);
 
       return {
-
         username: mail,
         password: nickname
       };
     }
-
-
 
     onClickLogInModal() {
       var url = "http://localhost:8080/";
@@ -126,16 +119,20 @@ console.log("email"+mail+"nick"+nickname)
         return;
       }
 
+      //const basicAuth =
+        //"Basic " + Base64.encode(data.username + ":" + data.password);
+      var formData = new FormData();
+      formData.append("username", data.username);
+      formData.append("password", data.password);
 
-      const basicAuth='Basic ' + Base64.encode(data.username + ":" + data.password);
-/*
       fetch(url, {
-        method: "GET",
-        credentials: 'include',
+        method: "POST",
+        credentials: "include",
         headers: new Headers({
-          "Content-Type": "application/json",
-          "Authorization": basicAuth
-        })
+          Accept:
+            "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8"
+        }),
+        body: formData
       })
         .then(response => {
           if (!response.ok) {
@@ -144,39 +141,9 @@ console.log("email"+mail+"nick"+nickname)
           }
           return response;
         })
-        .then(res => res.json())
+        .then(res => res.text())
         .then(response => {
-          console.log("response:", response);
-        })
-        .catch(error => {
-          console.error("Error:", error);
-        });
-      this.props.closeLogIn();
-
-      */
-      var formData = new FormData()
-formData.append("username",data.username);
-formData.append("password",data.password);
-      
-      fetch(url, {
-        method: "POST",
-        credentials: 'include',
-        headers: new Headers({
-            
-            "Accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8"
-            
-          }),
-        body: formData,
-      }).then(response => {
-          if (!response.ok) {
-            this.logInErrorManager(response.status);
-            throw Error(response.statusText);
-          }
-          return response;
-        })
-        .then(res => res.json())
-        .then(response => {
-          console.log("response:", response);
+          this.props.history.push("/chat");
         })
         .catch(error => {
           console.error("Error:", error);
@@ -187,8 +154,6 @@ formData.append("password",data.password);
 
 
       */
-      
-      
     }
 
     logInErrorManager(errorCode) {
@@ -196,6 +161,12 @@ formData.append("password",data.password);
         case 400: {
           window.alert(
             "Bad request please check that you are sending the field in the right way"
+          );
+          break;
+        }
+        case 401: {
+          window.alert(
+            "Not authorized"
           );
           break;
         }

@@ -27,14 +27,9 @@ public class MyUserDetailService implements UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException("user not found");
         }
-
         String password=user.getNickname();
         List<GrantedAuthority> galist = new ArrayList<GrantedAuthority>();
-
-        String[]roles={"USER"};;
-        for(String role:roles){
-            galist.add(new SimpleGrantedAuthority(role));
-        }
+        galist.add(new SimpleGrantedAuthority("USER"));
         return new User(username, password,galist);
     }
 }

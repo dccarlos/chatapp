@@ -37,7 +37,7 @@ console.dir(this)
           </Panel>
         </header>
         <SingInFormModal />
-        <LogInFormModal />
+        <LogInFormModal history={this.props.history}/>
       </div>
     );
   }
