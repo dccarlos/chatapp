@@ -35,7 +35,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.formLogin().loginPage("/").successHandler(customAuthenticationSuccessHandler).failureHandler(customAuthenticationHandler);
+        http.formLogin().loginPage("/").failureHandler(customAuthenticationHandler);
+        //http.formLogin().loginPage("/").defaultSuccessUrl("/chat",true).failureForwardUrl("/");
         http.csrf().disable();
         http.authorizeRequests().antMatchers("/","/login").permitAll()
                 .anyRequest().authenticated();

@@ -40,7 +40,8 @@ let LogInFormModal = (function() {
             <FormGroup validationState={this.getLoginEmailValidationState()}>
               <ControlLabel>Email</ControlLabel>
               <FormControl
-                type="email"
+                name="username"
+                type="username"
                 value={this.state.email}
                 placeholder="Enter email"
                 onChange={this.handleEmailChange}
@@ -74,7 +75,8 @@ let LogInFormModal = (function() {
             <FormGroup validationState={this.getLoginNicknameValidationState()}>
               <ControlLabel> Nickname</ControlLabel>
               <FormControl
-                type="text"
+                name="password"
+                type="password"
                 value={this.state.nickname}
                 placeholder="Enter nickname"
                 onChange={this.handleNicknameChange}
@@ -120,7 +122,7 @@ let LogInFormModal = (function() {
       }
 
       //const basicAuth =
-        //"Basic " + Base64.encode(data.username + ":" + data.password);
+      //"Basic " + Base64.encode(data.username + ":" + data.password);
       var formData = new FormData();
       formData.append("username", data.username);
       formData.append("password", data.password);
@@ -151,8 +153,6 @@ let LogInFormModal = (function() {
       this.props.closeLogIn();
       /*
 
-
-
       */
     }
 
@@ -165,9 +165,7 @@ let LogInFormModal = (function() {
           break;
         }
         case 401: {
-          window.alert(
-            "Not authorized"
-          );
+          window.alert("Not authorized");
           break;
         }
         case 409: {
@@ -197,10 +195,8 @@ let LogInFormModal = (function() {
             <Modal.Title>LogIn Modal</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <form>
-              <EmailTextForm ref="EmailTextForm" />
-              <NicknameTextForm ref="NicknameTextForm" />
-            </form>
+            <EmailTextForm ref="EmailTextForm" />
+            <NicknameTextForm ref="NicknameTextForm" />
           </Modal.Body>
           <Modal.Footer>
             <Button onClick={this.onClickCloseLogInModal}>Cancel</Button>
@@ -226,3 +222,13 @@ const AppContainer = connect(mapStateToProps, mapDispatchToProps)(
 );
 
 export default AppContainer;
+
+/*
+<Modal.Body>
+<form action="/" method="POST">
+  <EmailTextForm ref="EmailTextForm" />
+  <NicknameTextForm ref="NicknameTextForm" />
+  <Button type="submit">Form</Button>
+  </form>
+</Modal.Body>
+*/
