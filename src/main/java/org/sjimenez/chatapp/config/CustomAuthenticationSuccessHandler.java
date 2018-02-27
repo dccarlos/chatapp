@@ -26,9 +26,9 @@ public class CustomAuthenticationSuccessHandler  implements AuthenticationSucces
             throws   IOException {
         logger.info("Succesfull authentication");
         RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
-        //response.setStatus(302);
 
-        //redirectStrategy.sendRedirect(request, response,"/chat");
+
+
 
         response.sendRedirect("redirect:/chat");
 

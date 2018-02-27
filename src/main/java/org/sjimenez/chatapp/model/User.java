@@ -3,12 +3,15 @@ package org.sjimenez.chatapp.model;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.Objects;
 
 public class User {
+    public static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
 
     private int iduser;
     @NotEmpty(message = "Name cannot be null")
@@ -72,7 +75,8 @@ public class User {
     }
 
     public void setNickname(String nickname) {
-        this.nickname = nickname;
+
+        this.nickname=nickname;
     }
 
     @Override

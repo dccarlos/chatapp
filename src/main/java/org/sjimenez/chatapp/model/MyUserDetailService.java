@@ -8,6 +8,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.security.core.userdetails.User;
 
@@ -20,6 +22,9 @@ public class MyUserDetailService implements UserDetailsService {
     @Autowired
     private ChatDao chatDao;
 
+
+    public static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
+
     @Override
     public UserDetails loadUserByUsername(String username) {
         System.out.println("userdetailservice");
@@ -30,6 +35,6 @@ public class MyUserDetailService implements UserDetailsService {
         String password=user.getNickname();
         List<GrantedAuthority> galist = new ArrayList<GrantedAuthority>();
         galist.add(new SimpleGrantedAuthority("USER"));
-        return new User(username, password,galist);
+        return new User(username,password,galist);
     }
 }

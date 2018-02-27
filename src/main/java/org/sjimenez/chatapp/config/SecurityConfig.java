@@ -5,6 +5,7 @@ package org.sjimenez.chatapp.config;
 import org.sjimenez.chatapp.model.MyUserDetailService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -15,6 +16,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 @Configuration
 @EnableWebSecurity
+//@Profile(value = {"development", "production"})
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
@@ -25,9 +27,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private CustomAuthenticationHandler customAuthenticationHandler;
 
+    @Autowired
+    private CustomAuthenticationProvider customAuthenticationProvider;
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService);
+        //auth.userDetailsService(userDetailsService);
+        System.out.println("auth.authenticationprovider");
+        auth.authenticationProvider(customAuthenticationProvider);
     }
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -38,7 +45,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.formLogin().loginPage("/").failureHandler(customAuthenticationHandler);
         //http.formLogin().loginPage("/").defaultSuccessUrl("/chat",true).failureForwardUrl("/");
         http.csrf().disable();
-        http.authorizeRequests().antMatchers("/","/login").permitAll()
+        http.authorizeRequests().antMatchers("/","/login","/user/resources/insert").permitAll()
                 .anyRequest().authenticated();
+        http.logout().logoutSuccessUrl("/");
     }
+
+
+
 }
