@@ -1,14 +1,11 @@
 package org.sjimenez.chatapp.test;
 
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
-import org.json.JSONException;
 import org.junit.*;
 import org.junit.runner.RunWith;
-import org.sjimenez.chatapp.ChatappApplication;
-import org.sjimenez.chatapp.controllers.UserResourceController;
 import org.sjimenez.chatapp.dao.ChatDao;
 import org.sjimenez.chatapp.mappers.UserMapper;
 import org.sjimenez.chatapp.model.User;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,40 +14,34 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
-
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
-@Ignore @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
- public class UserResourceControllerTest {
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ActiveProfiles("test")
+public class UserResourceControllerTest {
     static private User user;
-    @Autowired
-    private PasswordEncoder PASSWORD_ENCODER;
-
-    @Autowired
-    private PasswordEncoder passwordEncoder;
 
     @Autowired
     private TestRestTemplate restTemplate;
     @MockBean
     private UserMapper userMapper;
     @MockBean
+    private PasswordEncoder pe;
+    @MockBean
     private ChatDao chatDao;
     @MockBean
     private User mockUser;
+
+
     @LocalServerPort
     private int port;
     private static final Logger logger = LoggerFactory.getLogger(UserDbMapperTest.class);
@@ -63,13 +54,11 @@ import static org.mockito.Mockito.when;
         user.setName("roshi");
         user.setLastName("kame");
         user.setMail("sjc@gmail.com");
-        user.setNickname("jackiechun");//"jackiechun"
+        user.setNickname("jackiechun");
         user.setBirthdate(date);
     }
 
-    //@WithMockUser(username = "test", password = "test", roles = "USER")
     @Test
-    //@WithMockUser(username = "sjcmexr@gmail.com", password="sergiossj")
     public void insertUserControllerTest_Ok() {
         logger.info("Insert user controller test-ok");
         when(chatDao.insertUser(user)).thenReturn(1);
@@ -107,7 +96,7 @@ import static org.mockito.Mockito.when;
     @Test()
     public void insertUserControllerTest_PersistenceErrorException() {
         logger.info("Insert user controller test-persistence error");
-        user.setNickname(PASSWORD_ENCODER.encode(user.getNickname()));
+        when(pe.encode("jackiechun")).thenReturn("jackiechun");
         when(chatDao.insertUser(user)).thenThrow(org.springframework.dao.DataAccessException.class);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -116,9 +105,7 @@ import static org.mockito.Mockito.when;
         assertEquals("Expected http response 500", HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
     }
 
-
     @Test
-    @WithMockUser()
     public void deleteUserControllerTest_Ok() {
         logger.info("delete user controller test-ok");
         when(chatDao.selectUserById(1)).thenReturn(user);
@@ -190,9 +177,11 @@ import static org.mockito.Mockito.when;
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<Void> request = new HttpEntity<Void>(headers);
         ResponseEntity<User> response = restTemplate.getForEntity("http://localhost:" + String.valueOf(port) + "/user/resources/getUserById/1", User.class);
+        System.out.println(response.getBody() + user.toString());
         assertEquals("Status code must be 200", HttpStatus.OK, response.getStatusCode());
         assertEquals("Espected user", user, response.getBody());
     }
+
 
     @Test
     public void selectUserByIdControllerTest_NotFound() {

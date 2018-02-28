@@ -98,9 +98,4 @@ public class UserResourceController {
         chatDao.deleteUserById(iduser);
         return new ResponseEntity<Void>(HttpStatus.OK);
     }
-
-
-
-
-
 }

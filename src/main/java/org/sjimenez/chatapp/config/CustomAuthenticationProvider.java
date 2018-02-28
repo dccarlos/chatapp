@@ -7,7 +7,6 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -18,20 +17,14 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     @Autowired
     private ChatDao chatDao;
-
-    //public static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
-
-
     @Autowired
     private PasswordEncoder PASSWORD_ENCODER;
 
     @Override
-    public Authentication authenticate(Authentication authentication)
-            throws AuthenticationException {
+    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String name = authentication.getName();
         String password = authentication.getCredentials().toString();
         User user = chatDao.selectUserByMail(name);
-
         if (PASSWORD_ENCODER.matches(password, user.getNickname())) {
             Authentication auth = new UsernamePasswordAuthenticationToken(name, password, new ArrayList<>());
             return auth;

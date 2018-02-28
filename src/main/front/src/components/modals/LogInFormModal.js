@@ -15,7 +15,6 @@ import {
   isValidEmail
 } from "../../util/AppUtils";
 import { showLogIn, closeLogIn } from "../../actions/actions";
-import { Base64 } from "js-base64";
 
 let LogInFormModal = (function() {
   let EmailTextForm = (function() {
@@ -103,15 +102,11 @@ let LogInFormModal = (function() {
     retrieveDataToLogInUser() {
       var mail = this.refs.EmailTextForm.state.email;
       var nickname = this.refs.NicknameTextForm.state.nickname;
-
-      console.log("email" + mail + "nick" + nickname);
-
       return {
         username: mail,
         password: nickname
       };
     }
-
     onClickLogInModal() {
       var url = "http://localhost:8080/";
       var data = this.retrieveDataToLogInUser();
@@ -120,9 +115,6 @@ let LogInFormModal = (function() {
         window.alert("Complete los campos de manera correcta");
         return;
       }
-
-      //const basicAuth =
-      //"Basic " + Base64.encode(data.username + ":" + data.password);
       var formData = new FormData();
       formData.append("username", data.username);
       formData.append("password", data.password);
@@ -186,9 +178,7 @@ let LogInFormModal = (function() {
       this.props.closeLogIn();
     }
 
-    //show={this.props.showLogInModel.showLogInState}
     render() {
-      console.log("render");
       return (
         <Modal show={this.props.showLogInModel.showLogInState}>
           <Modal.Header>
@@ -223,12 +213,4 @@ const AppContainer = connect(mapStateToProps, mapDispatchToProps)(
 
 export default AppContainer;
 
-/*
-<Modal.Body>
-<form action="/" method="POST">
-  <EmailTextForm ref="EmailTextForm" />
-  <NicknameTextForm ref="NicknameTextForm" />
-  <Button type="submit">Form</Button>
-  </form>
-</Modal.Body>
-*/
+
