@@ -10,8 +10,8 @@ import { Panel, Table, Grid, Row, Col } from "react-bootstrap";
 import SimpleTextFormControl from "./SimpleTextFormControl";
 import Stomp from "stompjs";
 import SockJS from "sockjs-client";
-/*
-const About = () => (
+
+const LogoOut = () => (
   <div>
     <h1>Chat window</h1>
     <form action="/logout" method="GET">
@@ -20,7 +20,7 @@ const About = () => (
   </div>
 );
 
-export default About;*/
+//export default LogOut;
 
   let AppPanel = (function() {
   var serverUrl = "http://localhost:8080/socket";
@@ -67,13 +67,25 @@ export default About;*/
       this.serverUrl = "http://localhost:8080/socket";
       this.title = "WebSockets chat";
       this.stompClient;
-      this.initializeWebSocketConnection();
+      this.initializeWebSocketConnection(this.onConnection,this.onResponse);
       this.initializeWebSocketConnection = this.initializeWebSocketConnection.bind(
         this
       );
       this.sendMessage = this.sendMessage.bind(this);
       this.printInConsole = this.printInConsole.bind(this);
       this.connect=this.connect.bind(this);
+      
+      this.state = {
+        response: '',
+        request: '',
+        messages: [],
+        isConnected: false
+    };
+
+
+
+
+
     }
 
 
@@ -82,7 +94,7 @@ export default About;*/
     }
 
 
-    initializeWebSocketConnection() {
+    initializeWebSocketConnection(onConnectionCallback,onResponseCallback) {
         console.log(this.serverUrl)
       let ws = new SockJS(this.serverUrl);
       this.stompClient = Stomp.over(ws);
@@ -90,7 +102,8 @@ export default About;*/
       this.stompClient.connect({}, function(frame) {
         that.stompClient.subscribe("/chat", message => {
           if (message.body) {
-            console.log(message.body);
+              onResponseCallback(message.body);
+            console.log("MessageReceived"+message.body);
           }
         });
       });
@@ -103,6 +116,15 @@ export default About;*/
         var message=this.refs.MessageForm.state.name;
         this.stompClient.send("/app/send/message", {}, message);
       console.log(this.refs.MessageForm.state.name);
+    }
+    onConnection(){
+
+
+
+
+    }
+    onResponse(message){
+        console.log('On response callback');
     }
 
     render() {
@@ -140,7 +162,9 @@ export default About;*/
       );
 
       return (
+          
         <Grid fluid={true}>
+        <LogoOut></LogoOut>
           <Row className="show-grid">
             <Col md={4} xs={9}>
               <Panel>
