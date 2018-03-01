@@ -23,7 +23,7 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class chatDaoTest {
+@Ignore public class chatDaoTest {
     private User user;
     @Autowired
     ChatDao chatDao;

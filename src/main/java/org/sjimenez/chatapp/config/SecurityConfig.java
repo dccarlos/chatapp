@@ -22,10 +22,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
     @Autowired
     private CustomAuthenticationHandler customAuthenticationHandler;
-
     @Autowired
     private CustomAuthenticationProvider customAuthenticationProvider;
-
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(customAuthenticationProvider);

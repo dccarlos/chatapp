@@ -29,7 +29,7 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class UserDbMapperTest {
+@Ignore public class UserDbMapperTest {
     private User user;
 
     @Autowired
