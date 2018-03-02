@@ -22,7 +22,7 @@ const LogoOut = () => (
 
 //export default LogOut;
 
-  let AppPanel = (function() {
+let AppPanel = (function() {
   var serverUrl = "http://localhost:8080/socket";
   var title = "WebSockets chat";
   var stompClient;
@@ -31,7 +31,7 @@ const LogoOut = () => (
     return class NameTextForm extends React.Component {
       constructor(props) {
         super(props);
-     
+
         this.state = { name: "" };
         this.handleNameChange = this.handleNameChange.bind(this);
       }
@@ -62,48 +62,42 @@ const LogoOut = () => (
 
   return class AppPanel extends React.Component {
     constructor(props) {
-        console.log("chatpanelconstructor")
+      console.log("chatpanelconstructor");
       super(props);
       this.serverUrl = "http://localhost:8080/socket";
       this.title = "WebSockets chat";
       this.stompClient;
-      this.initializeWebSocketConnection(this.onConnection,this.onResponse);
-      this.initializeWebSocketConnection = this.initializeWebSocketConnection.bind(
-        this
-      );
+
+      this.initializeWebSocketConnection = this.initializeWebSocketConnection.bind(this);
       this.sendMessage = this.sendMessage.bind(this);
       this.printInConsole = this.printInConsole.bind(this);
-      this.connect=this.connect.bind(this);
-      
+      this.connect = this.connect.bind(this);
+      this.append = this.append.bind(this);
+      this.onResponse=this.onResponse.bind(this);
+      this.initializeWebSocketConnection(this.onConnection, this.onResponse);
+
       this.state = {
-        response: '',
-        request: '',
+        response: "",
+        request: "",
         messages: [],
         isConnected: false
-    };
-
-
-
-
-
+      };
     }
 
-
-    connect(){
-        this.initializeWebSocketConnection();
+    connect() {
+      this.initializeWebSocketConnection();
     }
 
-
-    initializeWebSocketConnection(onConnectionCallback,onResponseCallback) {
-        console.log(this.serverUrl)
+    initializeWebSocketConnection(onConnectionCallback, onResponseCallback) {
+      console.log(this.serverUrl);
       let ws = new SockJS(this.serverUrl);
       this.stompClient = Stomp.over(ws);
       let that = this;
       this.stompClient.connect({}, function(frame) {
         that.stompClient.subscribe("/chat", message => {
           if (message.body) {
-              onResponseCallback(message.body);
-            console.log("MessageReceived"+message.body);
+            onResponseCallback(message);
+            console.log("MessageReceived" + message.body);
           }
         });
       });
@@ -113,29 +107,46 @@ const LogoOut = () => (
       this.stompClient.send("/app/send/message", {}, message);
     }
     printInConsole() {
-        var message=this.refs.MessageForm.state.name;
-        this.stompClient.send("/app/send/message", {}, message);
+      var message = this.refs.MessageForm.state.name;
+      this.stompClient.send("/app/send/message", {}, message);
       console.log(this.refs.MessageForm.state.name);
     }
-    onConnection(){
+    onConnection() {}
 
-
-
-
+    onResponse(message) {
+      console.log("On response callback");
+      console.log(message);
+      var msg = { name:JSON.parse(message.body).name,text:JSON.parse(message.body).message , id: message.headers['message-id'] };
+      console.log(msg)
+      console.dir(msg)
+      console.log("append");
+      console.log(this)
+      let messages = this.state.messages;
+      this.setState({
+        messages: messages.concat(msg)
+      });
+      console.log(this.state);
     }
-    onResponse(message){
-        console.log('On response callback');
+    append() {
+      //var msg = {text: JSON.parse(message.body).content, id: message.headers["message-id"]};
+      var msg = { text: "text", id: 1 };
+      console.log("append");
+      let messages = this.state.messages;
+      this.setState({
+        messages: messages.concat(msg)
+      });
+      console.log(this.state);
     }
 
     render() {
-      /*
-            let messages = this.state.messages.map(message => {
-                return (
-                    <tr key={message.id}>
-                        <td>{message.text}</td>
-                    </tr>
-                );
-            });*/
+      let messages = this.state.messages.map(message => {
+        return (
+          <tr key={message.id}>
+          
+            <td>{message.name}-{message.text}</td>
+          </tr>
+        );
+      });
 
       let messageList = (
         <Panel>
@@ -152,9 +163,7 @@ const LogoOut = () => (
                 <tr>
                   <th style={{ width: "100%" }}>Messages</th>
                 </tr>
-                <tr>
-                  <td>messages goes here</td>
-                </tr>
+                {messages}
               </tbody>
             </Table>
           </div>
@@ -162,14 +171,17 @@ const LogoOut = () => (
       );
 
       return (
-          
         <Grid fluid={true}>
-        <LogoOut></LogoOut>
+          <LogoOut />
           <Row className="show-grid">
             <Col md={4} xs={9}>
               <Panel>
-                <Button onClick={this.connect} disabled={false}>Connect</Button>
-                <Button disabled={false}>Disconnect</Button>
+                <Button onClick={this.connect} disabled={false}>
+                  Connect
+                </Button>
+                <Button onClick={this.append} disabled={false}>
+                  Disconnect
+                </Button>
                 <SimpleTextFormControl readOnly={false} />
                 <MessageForm ref="MessageForm" />
                 <Button onClick={this.printInConsole} disabled={false}>
