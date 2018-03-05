@@ -1,12 +1,11 @@
 package org.sjimenez.chatapp.test;
 
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
-import org.json.JSONException;
 import org.junit.*;
 import org.junit.runner.RunWith;
 import org.sjimenez.chatapp.dao.ChatDao;
 import org.sjimenez.chatapp.mappers.UserMapper;
 import org.sjimenez.chatapp.model.User;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,19 +14,19 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.jdbc.Sql;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ActiveProfiles("test")
 public class UserResourceControllerTest {
     static private User user;
 
@@ -36,7 +35,13 @@ public class UserResourceControllerTest {
     @MockBean
     private UserMapper userMapper;
     @MockBean
+    private PasswordEncoder pe;
+    @MockBean
     private ChatDao chatDao;
+    @MockBean
+    private User mockUser;
+
+
     @LocalServerPort
     private int port;
     private static final Logger logger = LoggerFactory.getLogger(UserDbMapperTest.class);
@@ -61,6 +66,7 @@ public class UserResourceControllerTest {
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<User> request = new HttpEntity<User>(user, headers);
         ResponseEntity<User> response = restTemplate.postForEntity("http://localhost:" + String.valueOf(port) + "/user/resources/insert", request, User.class);
+        user.setNickname(response.getBody().getNickname());
         assertEquals("son iguales", user, response.getBody());
         assertEquals("Expected http response 200", HttpStatus.OK, response.getStatusCode());
     }
@@ -90,6 +96,7 @@ public class UserResourceControllerTest {
     @Test()
     public void insertUserControllerTest_PersistenceErrorException() {
         logger.info("Insert user controller test-persistence error");
+        when(pe.encode("jackiechun")).thenReturn("jackiechun");
         when(chatDao.insertUser(user)).thenThrow(org.springframework.dao.DataAccessException.class);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -170,9 +177,11 @@ public class UserResourceControllerTest {
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<Void> request = new HttpEntity<Void>(headers);
         ResponseEntity<User> response = restTemplate.getForEntity("http://localhost:" + String.valueOf(port) + "/user/resources/getUserById/1", User.class);
+        System.out.println(response.getBody() + user.toString());
         assertEquals("Status code must be 200", HttpStatus.OK, response.getStatusCode());
         assertEquals("Espected user", user, response.getBody());
     }
+
 
     @Test
     public void selectUserByIdControllerTest_NotFound() {

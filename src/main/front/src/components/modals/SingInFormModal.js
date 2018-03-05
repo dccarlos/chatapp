@@ -33,6 +33,7 @@ let SingInFormModal = (function() {
         this.setState({ name: e.target.value });
       }
       render() {
+        
         return (
           <div>
             <FormGroup validationState={this.getLoginNameValidationState()}>
@@ -153,6 +154,7 @@ let SingInFormModal = (function() {
     };
   })();
 
+
   return class AppSaveUserModal extends React.Component {
     constructor(props) {
       super(props);
@@ -228,7 +230,6 @@ let SingInFormModal = (function() {
     onClickCloseSaveUserModal() {
       this.props.closeSignIn();
     }
-
     render() {
       return <Modal show={this.props.showModel.show}>
           <Modal.Header>
@@ -255,7 +256,7 @@ let SingInFormModal = (function() {
 })();
 
 const mapStateToProps = (state, ownProps) => ({
-  showModel: state.showModel
+  showModel: state.showModel,
 });
 
 const mapDispatchToProps = {

@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +21,8 @@ import java.util.Optional;
 @RequestMapping(value = "/user/resources")
 public class UserResourceController {
     private static final Logger logger = LoggerFactory.getLogger(UserResourceController.class);
+    @Autowired
+    private PasswordEncoder PASSWORD_ENCODER;
 
     @Autowired
     private ChatDao chatDao;
@@ -30,8 +34,14 @@ public class UserResourceController {
         return chatDao.findAll();
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<User> login() {
+        return new ResponseEntity<User>(HttpStatus.OK);
+    }
+
     @PostMapping("/insert")
     public ResponseEntity<User> insert(@Valid @RequestBody User user, BindingResult bindingResult) {
+        logger.info("Insert service");
         if (bindingResult.hasErrors()) {
             logger.warn("Ocurred an error while validating request data");
             return new ResponseEntity<User>(HttpStatus.BAD_REQUEST);
@@ -42,7 +52,9 @@ public class UserResourceController {
             logger.error("Duplicated keys");
             return new ResponseEntity<User>(HttpStatus.CONFLICT);
         }
+
         try {
+            user.setNickname(PASSWORD_ENCODER.encode(user.getNickname()));
             chatDao.insertUser(user);
         } catch (org.springframework.dao.DataAccessException ex) {
             logger.error("Error when inserting in database" + ex);

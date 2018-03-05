@@ -1,4 +1,11 @@
 import React from "react";
+import {
+  FormGroup,
+  ControlLabel,
+  FormControl,
+  Modal,
+  Button
+} from "react-bootstrap";
 import DatePicker from "react-datepicker";
 import moment from "moment";
 
@@ -24,10 +31,17 @@ class Example extends React.Component {
 
   render() {
     return (
+
+      <FormGroup validationState={"success"}>
+      <ControlLabel>Birthdate</ControlLabel>
       <DatePicker
+        readOnly={true}
         selected={this.state.startDate}
         onChange={this.handleChange}
       />
+      <FormControl.Feedback />
+    </FormGroup>
+
     );
   }
 }

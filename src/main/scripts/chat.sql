@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS `chat`.`user` (
   `name` VARCHAR(45) NOT NULL,
   `lastName` VARCHAR(45) NOT NULL,
   `mail` VARCHAR(45) NOT NULL,
-  `nickname` VARCHAR(45) NOT NULL,
+  `nickname` TEXT NOT NULL,
   `birthdate` DATE NOT NULL,
   PRIMARY KEY (`iduser`),
   UNIQUE INDEX `maill_UNIQUE` (`mail` ASC))

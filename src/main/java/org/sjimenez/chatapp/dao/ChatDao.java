@@ -5,6 +5,8 @@ import org.apache.ibatis.annotations.*;
 import org.sjimenez.chatapp.mappers.UserMapper;
 import org.sjimenez.chatapp.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -15,6 +17,7 @@ public class ChatDao {
 
     @Autowired
     UserMapper userMapper;
+
 
     public List<User> findAll() {
         return userMapper.findAll();
