@@ -35,12 +35,16 @@ import static org.junit.Assert.assertEquals;
 
     @Autowired
     private UserMapper userMapper;
+
+
     @Autowired
     GroupMapper groupMapper;
+
     private static final Logger logger = LoggerFactory.getLogger(UserDbMapperTest.class);
 
     @Before
     public void initUnitTest() {
+        userMapper.truncateTableUsersGroup();
         userMapper.truncateTableUsers();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate date = LocalDate.parse("2005-06-12", formatter);
@@ -51,11 +55,12 @@ import static org.junit.Assert.assertEquals;
         user.setNickname("jackiechun");
         user.setBirthdate(date);
     }
+
     @Test
     public void selectUserById2() {
         logger.info("Select user by id test");
         userMapper.insert(user);
-        User selectedUser = groupMapper.selectUserById(1);
+        User selectedUser = groupMapper.selectUserByIdd(1);
         assertEquals("Equal objects", user, selectedUser);
     }
 

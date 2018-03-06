@@ -19,8 +19,6 @@
         <package name="org.sjimenez.chatapp.model"/>
     </typeAliases>
     <mappers>
-        <mapper resource="mybatis.mapper.GroupMapper.xml"/>
-        <mapper resource="mybatis.mapper.MessageMapper.xml"/>
-        <mapper resource="mybatis.mapper.UserMapper.xml"/>
+        <mapper resource="org/sjimenez/chatapp/mappers/GroupMapper.xml"/>
     </mappers>
 </configuration>

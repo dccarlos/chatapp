@@ -31,7 +31,15 @@ public interface UserMapper {
     @Select("SELECT iduser,name,lastName,mail,nickName,birthdate from user WHERE mail = #{mail}")
     User selectUserByMail(String mail);
 
-    @Update("TRUNCATE TABLE user; ALTER TABLE user ALTER COLUMN iduser RESTART WITH 1")
+    @Update("SET FOREIGN_KEY_CHECKS = 0; TRUNCATE TABLE user; SET FOREIGN_KEY_CHECKS = 1; ALTER TABLE user ALTER COLUMN iduser RESTART WITH 1")
     void truncateTableUsers();
+
+    @Update("TRUNCATE TABLE user; ALTER TABLE user ALTER COLUMN iduser RESTART WITH 1")
+    void truncateTableUsers1();
+
+
+
+    @Update("TRUNCATE TABLE user_group; ALTER TABLE user_group ALTER COLUMN iduser_group RESTART WITH 1;")
+    void truncateTableUsersGroup();
 
 }

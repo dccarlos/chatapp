@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+       Copyright 2015-2016 the original author or authors.
+       Licensed under the Apache License, Version 2.0 (the "License");
+       you may not use this file except in compliance with the License.
+       You may obtain a copy of the License at
+          http://www.apache.org/licenses/LICENSE-2.0
+       Unless required by applicable law or agreed to in writing, software
+       distributed under the License is distributed on an "AS IS" BASIS,
+       WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+       See the License for the specific language governing permissions and
+       limitations under the License.
+-->
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.sjimenez.chatapp.mappers.GroupMapper">
+
+    <resultMap id = "result" type = "org.sjimenez.chatapp.model.Group">
+        <result property = "idgroup" column = "idgroup"/>
+        <result property = "name" column = "name"/>
+        <result property = "creation" column = "creation"/>
+        <collection property="userList" column="iduser"  ofType="User" select="selectUserForGroup">
+            <id property="iduser" column="iduser"/>
+            <result property="mail" column="mail"/>
+            <result property="nickname" column="nickname"/>
+        </collection>
+
+    </resultMap>
+
+    <select id="selectUserByIdd" resultType="org.sjimenez.chatapp.model.User" >select * from chat.user where iduser = #{iduser}</select>
+    <select id="selectGroupById"  resultMap="result"  >select * from chat.group where idgroup = #{idgroup}</select>
+
+    <select id="selectUserForGroup" resultType="org.sjimenez.chatapp.model.User">
+        select * from chat.user where iduser = #{1}
+    </select>
+    
+</mapper>
