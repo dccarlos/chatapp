@@ -2,6 +2,7 @@ package org.sjimenez.chatapp.test;
 
 
 import org.junit.Ignore;
+import org.sjimenez.chatapp.mappers.GroupMapper;
 import org.sjimenez.chatapp.mappers.UserMapper;
 import org.sjimenez.chatapp.model.User;
 import org.junit.Before;
@@ -34,6 +35,8 @@ import static org.junit.Assert.assertEquals;
 
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    GroupMapper groupMapper;
     private static final Logger logger = LoggerFactory.getLogger(UserDbMapperTest.class);
 
     @Before
@@ -47,6 +50,13 @@ import static org.junit.Assert.assertEquals;
         user.setMail("sjc@gmail.com");
         user.setNickname("jackiechun");
         user.setBirthdate(date);
+    }
+    @Test
+    public void selectUserById2() {
+        logger.info("Select user by id test");
+        userMapper.insert(user);
+        User selectedUser = groupMapper.selectUserById(1);
+        assertEquals("Equal objects", user, selectedUser);
     }
 
     @Test

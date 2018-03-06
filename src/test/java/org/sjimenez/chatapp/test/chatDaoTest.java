@@ -6,6 +6,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.sjimenez.chatapp.dao.ChatDao;
+import org.sjimenez.chatapp.mappers.GroupMapper;
 import org.sjimenez.chatapp.mappers.UserMapper;
 import org.sjimenez.chatapp.model.User;
 import org.slf4j.Logger;
@@ -29,6 +30,8 @@ import static org.junit.Assert.assertEquals;
     ChatDao chatDao;
     @Autowired
     UserMapper userMapper;
+
+
     private static final Logger logger = LoggerFactory.getLogger(UserDbMapperTest.class);
 
     @Before
@@ -43,6 +46,7 @@ import static org.junit.Assert.assertEquals;
         user.setNickname("jackiechun");
         user.setBirthdate(date);
     }
+
 
     @Test
     public void insertUser() {
