@@ -1,41 +1,30 @@
 package org.sjimenez.chatapp.test;
 
-
-import org.junit.Ignore;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.sjimenez.chatapp.mappers.GroupMapper;
 import org.sjimenez.chatapp.mappers.UserMapper;
 import org.sjimenez.chatapp.model.User;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 
-
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@Ignore public class UserDbMapperTest {
+public class GroupDbMapperTest {
     private User user;
 
     @Autowired
     private UserMapper userMapper;
-
 
     @Autowired
     GroupMapper groupMapper;
@@ -56,6 +45,19 @@ import static org.junit.Assert.assertEquals;
         user.setBirthdate(date);
     }
 
+    @Test
+    public void nosense(){
+
+
+
+
+    }
+
+
+
+
+
+/*
     @Test
     public void insertUser() {
         logger.info("Insert user test");
@@ -99,5 +101,9 @@ import static org.junit.Assert.assertEquals;
         userMapper.insert(user);
         User selectedUser = userMapper.selectUserByMail("sjc@gmail.com");
         assertEquals("Equal objects", user, selectedUser);
-    }
+    }*/
+
+
+
+
 }
