@@ -20,8 +20,8 @@
         <result property = "idgroup" column = "idgroup"/>
         <result property = "name" column = "name"/>
         <result property = "creation" column = "creation"/>
-        <collection property="userList" column="iduser"  ofType="User" select="selectUserForGroup">
-            <id property="iduser" column="iduser"/>
+        <collection property="userList" column="idgroup"  ofType="org.sjimenez.chatapp.model.User" select="selectUserForGroup" autoMapping="true" notNullColumn="idgroup">
+            <result property="iduser" column="iduser"/>
             <result property="mail" column="mail"/>
             <result property="nickname" column="nickname"/>
         </collection>
@@ -32,7 +32,10 @@
     <select id="selectGroupById"  resultMap="result"  >select * from chat.group where idgroup = #{idgroup}</select>
 
     <select id="selectUserForGroup" resultType="org.sjimenez.chatapp.model.User">
-        select * from chat.user where iduser = #{1}
+        select distinct  chat.user.name,chat.user.mail
+        from chat.user_group inner join chat.user on chat.user.iduser=chat.user_group.iduser_user_group
+        and chat.user_group.idgroup_user_group=#{idgroup};
+        <!--select * from chat.user where iduser = #{1}-->
     </select>
     
 </mapper>
