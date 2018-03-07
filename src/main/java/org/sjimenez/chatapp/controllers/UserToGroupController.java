@@ -2,6 +2,9 @@ package org.sjimenez.chatapp.controllers;
 
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+
+import org.sjimenez.chatapp.annotation.NotEmpty;
 import org.sjimenez.chatapp.delegate.GroupDelegate;
 import org.sjimenez.chatapp.model.User;
 import org.slf4j.Logger;
@@ -42,7 +45,7 @@ public class UserToGroupController {
 	 * @return
 	 */
 	@GetMapping("/{groupName}")
-	public ResponseEntity<List<User>> fetchUsersByGroupName(@PathVariable("groupName") String groupName) {
+	public ResponseEntity<List<User>> fetchUsersByGroupName(@PathVariable("groupName") @NotEmpty @NotNull String groupName) {
 		return new ResponseEntity<List<User>>(groupDelegate.fetchUsersByGroupName(groupName), HttpStatus.OK);
 	}
 	
@@ -54,7 +57,8 @@ public class UserToGroupController {
 	 * @return
 	 */
 	@PostMapping("/{groupName}")
-	public ResponseEntity<List<User>> addUserToGroup(@PathVariable("groupName") String groupName, @RequestParam("userList") List<Integer> userList) {
+	public ResponseEntity<List<User>> addUserToGroup(@PathVariable("groupName") @NotEmpty @NotNull String groupName, 
+			@RequestParam("userList") @NotEmpty @NotNull List<Integer> userList) {
 		return new ResponseEntity<List<User>>(groupDelegate.addUserToGroup(groupName, userList), HttpStatus.OK);
 	}
 
@@ -66,7 +70,7 @@ public class UserToGroupController {
 	 * @return
 	 */
 	@DeleteMapping("/{groupName}")
-	public ResponseEntity<List<User>> removeUserFromGroup(@PathVariable("groupName") String groupName, @RequestParam("userList") List<Integer> userList) {
+	public ResponseEntity<List<User>> removeUserFromGroup(@PathVariable("groupName") @NotEmpty @NotNull String groupName, @RequestParam("userList") @NotEmpty @NotNull List<Integer> userList) {
 		return new ResponseEntity<List<User>>(groupDelegate.removeUserFromGroup(groupName, userList), HttpStatus.OK);
 
 	}

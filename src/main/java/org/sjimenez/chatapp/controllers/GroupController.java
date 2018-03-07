@@ -1,5 +1,8 @@
 package org.sjimenez.chatapp.controllers;
 
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotEmpty;
 import org.sjimenez.chatapp.delegate.GroupDelegate;
 import org.sjimenez.chatapp.model.Group;
 import org.slf4j.Logger;
@@ -7,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping(value = "/group")
+@Validated
 public class GroupController {
 
 	@Autowired
@@ -40,9 +45,8 @@ public class GroupController {
 	 * @return
 	 */
 	@PostMapping("/{groupName}")
-	public ResponseEntity<Group> createGroup(@PathVariable("groupName") String groupName) {
+	public ResponseEntity<Group> createGroup(@PathVariable("groupName") @NotEmpty @NotNull String groupName) {
 		return new ResponseEntity<Group>(groupDelegate.createGroup(groupName), HttpStatus.OK);
-
 	}
 
 	/**
@@ -50,7 +54,7 @@ public class GroupController {
 	 * name, and get the users assigned to it.
 	 */
 	@GetMapping("/{groupName}")
-	public ResponseEntity<Group> fetchGroupByName(@PathVariable("groupName") String groupName) {
+	public ResponseEntity<Group> fetchGroupByName(@PathVariable("groupName") @NotEmpty @NotNull String groupName) {
 		return new ResponseEntity<Group>(groupDelegate.fetchGroupByName(groupName), HttpStatus.OK);
 	}
 
@@ -62,8 +66,8 @@ public class GroupController {
 	 * @return
 	 */
 	@PutMapping("/{groupName}")
-	public ResponseEntity<Group> updateGroupByName(@PathVariable("groupName") String groupName,
-			@RequestParam("newGroupName") String newGroupName) {
+	public ResponseEntity<Group> updateGroupByName(@PathVariable("groupName") @NotEmpty @NotNull String groupName,
+			@RequestParam("newGroupName") @NotEmpty @NotNull  String newGroupName) {
 		return new ResponseEntity<Group>(groupDelegate.updateGroupByName(groupName, newGroupName), HttpStatus.OK);
 	}
 
@@ -72,7 +76,7 @@ public class GroupController {
 	 */
 	@SuppressWarnings("rawtypes")
 	@DeleteMapping("/{groupName}")
-	public ResponseEntity deleteGroupByName(@PathVariable("groupName") String groupName) {
+	public ResponseEntity deleteGroupByName(@PathVariable("groupName") @NotEmpty @NotNull String groupName) {
 		groupDelegate.deleteGroupByName(groupName);
 		return new ResponseEntity(HttpStatus.OK);
 	}

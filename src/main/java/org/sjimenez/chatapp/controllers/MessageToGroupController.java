@@ -2,6 +2,9 @@ package org.sjimenez.chatapp.controllers;
 
 import java.util.List;
 
+import javax.validation.constraints.NotNull;
+
+import org.hibernate.validator.constraints.NotEmpty;
 import org.sjimenez.chatapp.delegate.MessageDelegate;
 import org.sjimenez.chatapp.model.Message;
 import org.slf4j.Logger;
@@ -25,13 +28,13 @@ public class MessageToGroupController {
 	private MessageDelegate messageDelegate;
 
 	@PostMapping("/{groupName}")
-	public void sendMessageToGroup(@PathVariable("groupName") String groupName) {
+	public void sendMessageToGroup(@PathVariable("groupName") @NotEmpty @NotNull String groupName) {
 		messageDelegate.sendMessageToGroup(groupName, null);
 	}
 
 
 	@GetMapping("/{groupName}")
-	public ResponseEntity<List<Message>> fetchAllMessagesFromGroup(@PathVariable("groupName") String groupName) {
+	public ResponseEntity<List<Message>> fetchAllMessagesFromGroup(@PathVariable("groupName") @NotEmpty @NotNull String groupName) {
 		return new ResponseEntity<List<Message>>(messageDelegate.fetchAllMessagesFromGroup(groupName), HttpStatus.OK);
 
 	}
