@@ -4,7 +4,7 @@ import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
-import org.sjimenez.chatapp.annotation.NotEmpty;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.sjimenez.chatapp.delegate.GroupDelegate;
 import org.sjimenez.chatapp.model.User;
 import org.slf4j.Logger;
