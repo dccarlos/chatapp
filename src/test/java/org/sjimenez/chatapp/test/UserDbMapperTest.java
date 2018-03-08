@@ -1,13 +1,10 @@
 package org.sjimenez.chatapp.test;
 
 
-import org.junit.Ignore;
+import org.junit.*;
 import org.sjimenez.chatapp.mappers.GroupMapper;
 import org.sjimenez.chatapp.mappers.UserMapper;
 import org.sjimenez.chatapp.model.User;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +27,8 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-@Ignore public class UserDbMapperTest {
+@Sql(scripts = "classpath:testdata.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+ public class UserDbMapperTest {
     private User user;
 
     @Autowired
@@ -54,6 +52,13 @@ import static org.junit.Assert.assertEquals;
         user.setMail("sjc@gmail.com");
         user.setNickname("jackiechun");
         user.setBirthdate(date);
+    }
+    @After
+    public void after(){
+        userMapper.truncateTableMessages();
+        userMapper.truncateTableGroups();
+        userMapper.truncateTableUsers();
+        userMapper.truncateTableUsersGroup();
     }
 
     @Test

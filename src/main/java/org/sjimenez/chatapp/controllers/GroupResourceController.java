@@ -88,7 +88,7 @@ public class GroupResourceController {
 
     @GetMapping("/getMessages")
     public ResponseEntity<List<Message>> getMessages() {
-        List<Message>listOfMessages=groupMapper.getMessagesFromGroup(1);
+        List<Message>listOfMessages=groupMapper.selectMessagesFromGroup(1);
         return new ResponseEntity<List<Message>>(listOfMessages,HttpStatus.OK);
     }
 

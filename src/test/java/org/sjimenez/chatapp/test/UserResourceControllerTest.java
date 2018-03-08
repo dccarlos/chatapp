@@ -15,7 +15,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDate;
@@ -27,13 +29,17 @@ import static org.mockito.Mockito.when;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-@Ignore public class UserResourceControllerTest {
+@Sql(scripts = "classpath:testdata.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+ public class UserResourceControllerTest {
     static private User user;
 
     @Autowired
     private TestRestTemplate restTemplate;
-    @MockBean
-    private UserMapper userMapper;
+
+
+    @Autowired
+    private UserMapper um;
+
     @MockBean
     private PasswordEncoder pe;
     @MockBean
@@ -56,6 +62,14 @@ import static org.mockito.Mockito.when;
         user.setMail("sjc@gmail.com");
         user.setNickname("jackiechun");
         user.setBirthdate(date);
+    }
+
+    @After
+    public void after(){
+        um.truncateTableMessages();
+        um.truncateTableGroups();
+        um.truncateTableUsers();
+        um.truncateTableUsersGroup();
     }
 
     @Test
@@ -83,7 +97,7 @@ import static org.mockito.Mockito.when;
     }
 
     @Test()
-    public void insertUserControllerTest_DuplicatedMail() {
+     public void insertUserControllerTest_DuplicatedMail() {
         logger.info("Insert user controller test-duplicated key");
         when(chatDao.selectUserByMail(user.getMail())).thenReturn(user);
         HttpHeaders headers = new HttpHeaders();
@@ -157,6 +171,7 @@ import static org.mockito.Mockito.when;
     }
 
     @Test
+
     public void updateUserControllerTest_NotFound() {
         logger.info("update user controller test-not found");
         user.setIduser(1);

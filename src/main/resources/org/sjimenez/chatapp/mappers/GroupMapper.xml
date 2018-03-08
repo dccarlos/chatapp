@@ -16,13 +16,24 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.sjimenez.chatapp.mappers.GroupMapper">
 
+    <!--Select all groups-->
+    <select id="selectAll" resultType="org.sjimenez.chatapp.model.Group">select * from chat.`group`</select>
+
+    <!--<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<-->
+
+    <!--Select all usergroups-->
+    <select id="selectAllUG" resultType="org.sjimenez.chatapp.model.UserGroupRelation">select * from chat.`user_group`
+    </select>
+
+    <!--<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<-->
+
     <!--resultMap of selectById-->
     <resultMap id="result" type="org.sjimenez.chatapp.model.Group">
         <result property="idgroup" column="idgroup"/>
         <result property="name" column="name"/>
         <result property="creation" column="creation"/>
         <collection property="userList" column="idgroup" ofType="org.sjimenez.chatapp.model.User"
-                    select="selectUserForGroup" notNullColumn="idgroup">
+                    select="selectUserForGroup" notNullColumn="idgroup" javaType="ArrayList">
             <result property="iduser" column="iduser"/>
             <result property="name" column="name"/>
             <result property="lastName" column="lastName"/>
@@ -32,9 +43,21 @@
         </collection>
     </resultMap>
     <!--SelectGroupByID-->
-    <select id="selectGroupById" resultMap="result">select * from chat.group where idgroup = #{idgroup}</select>
+    <select id="selectGroupById" resultMap="result" parameterType="int">select * from chat.`group` where idgroup =
+        #{idgroup}
+    </select>
+
+    <!--resultMap of selectById-->
+    <resultMap id="resultUserForGroup" type="org.sjimenez.chatapp.model.User">
+        <result property="iduser" column="iduser"/>
+        <result property="name" column="name"/>
+        <result property="nickname" column="nickname"/>
+    </resultMap>
+
     <!--select all the users in the group-->
-    <select id="selectUserForGroup" resultType="org.sjimenez.chatapp.model.User">
+    <select id="selectUserForGroup" resultMap="resultUserForGroup" parameterType="int">
+        <!--SELECT chat.user.iduser, chat.user.name,chat.user.lastName,chat.user.mail,chat.user.nickName,chat.user.birthdate from chat.`user` WHERE iduser = 1-->
+        <!--select * from chat.`user` where iduser = 1;-->
         select distinct
         chat.user.iduser,chat.user.name,chat.user.lastName,chat.user.mail,chat.user.nickname,chat.user.birthdate
         from chat.user_group inner join chat.user on chat.user.iduser=chat.user_group.iduser_user_group
@@ -59,7 +82,7 @@
         </collection>
     </resultMap>
     <!--selectGroupByName-->
-    <select id="selectGroupByName" resultMap="resultSelectGroupByName">select * from chat.group where name = #{name}
+    <select id="selectGroupByName" resultMap="resultSelectGroupByName">select * from chat.`group` where name = #{name}
     </select>
     <!--select all the users in the group-->
     <select id="selectUserForGroupByName" resultType="org.sjimenez.chatapp.model.User">
@@ -74,29 +97,24 @@
     <!--insertGroup-->
     <insert id="insertGroup" parameterType="org.sjimenez.chatapp.model.Group" useGeneratedKeys="true"
             keyProperty="idgroup" keyColumn="idgroup">
-        insert into chat.group(name,creation) values(#{name},#{creation})
+        insert into chat.`group`(name,creation) values(#{name},#{creation})
     </insert>
 
     <!--<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<-->
 
     <!--updateGroup(update old name with a new name)-->
     <update id="updateGroup">
-        update chat.group set
-        chat.group.name = #{newName}
-        where chat.group.name = #{oldName}
+        update chat.`group` set
+        chat.`group`.name = #{newName}
+        where chat.`group`.name = #{oldName}
     </update>
 
     <!--<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<-->
 
     <!--deleteGroupById(delete in group and in the table user_group)-->
     <delete id="deleteGroupById">
-        <!--
-        DELETE chat.group, chat.user_group
-        FROM chat.group
-        INNER JOIN chat.user_group ON chat.group.idgroup = chat.user_group.idgroup_user_group
-        WHERE chat.group.idgroup=#{idgroup}-->
         delete from chat.user_group where chat.user_group.idgroup_user_group=#{idgroup};
-        delete from chat.group where chat.group.idgroup=#{idgroup};
+        delete from chat.`group` where chat.`group`.idgroup=#{idgroup};
     </delete>
 
     <!--<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<-->
@@ -131,9 +149,9 @@
     <!--<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<-->
 
     <!--get all messages of a group-->
-    <select id="getMessagesFromGroup" resultType="org.sjimenez.chatapp.model.Message">
+    <select id="selectMessagesFromGroup" resultType="org.sjimenez.chatapp.model.Message">
         select distinct chat.message.idmessage, chat.message.content,chat.message.creation,chat.message.idgroup_message
-        from chat.message inner join chat.group on chat.message.idgroup_message=chat.group.idgroup and
+        from chat.message inner join chat.`group` on chat.message.idgroup_message=chat.`group`.idgroup and
         chat.message.idgroup_message=#{idgroup};
     </select>
 </mapper>

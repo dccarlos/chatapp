@@ -15,6 +15,10 @@ public interface GroupMapper {
 
     Group selectGroupByName(String name);
 
+    List<Group> selectAll();
+
+    List<UserGroupRelation> selectAllUG();
+
     void insertGroup(Group group);
 
     void updateGroup(@Param("newName")String newName,@Param("oldName")String oldName);
@@ -27,5 +31,7 @@ public interface GroupMapper {
 
     void deleteUserFromGroup(@Param("idgroup")int idgroup,@Param("iduser")int iduser);
 
-    List<Message> getMessagesFromGroup(int idgroup);
+    List<Message> selectMessagesFromGroup(int idgroup);
+    //////
+    User selectUserForGroup(int iduser);
 }

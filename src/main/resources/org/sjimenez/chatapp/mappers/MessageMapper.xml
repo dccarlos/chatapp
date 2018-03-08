@@ -15,7 +15,12 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.sjimenez.chatapp.mappers.MessageMapper">
+
     <insert id="insertMessage">
         insert into chat.message(content,creation,idgroup_message) values(#{content},#{creation},#{idgroup})
     </insert>
+
+    <select id="selectAll"  resultType="org.sjimenez.chatapp.model.Message" >select * from chat.message </select>
+
+
 </mapper>

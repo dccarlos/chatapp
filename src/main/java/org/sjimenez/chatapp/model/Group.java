@@ -64,5 +64,13 @@ public class Group {
         return Objects.hash(idgroup, name, creation);
     }
 
-
+    @Override
+    public String toString() {
+        return "Group{" +
+                "idgroup=" + idgroup +
+                ", name='" + name + '\'' +
+                ", creation=" + creation +
+                ", userList=" + userList +
+                '}';
+    }
 }

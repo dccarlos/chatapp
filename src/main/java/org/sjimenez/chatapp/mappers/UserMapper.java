@@ -34,10 +34,14 @@ public interface UserMapper {
     @Update("SET FOREIGN_KEY_CHECKS = 0; TRUNCATE TABLE user; SET FOREIGN_KEY_CHECKS = 1; ALTER TABLE user ALTER COLUMN iduser RESTART WITH 1")
     void truncateTableUsers();
 
+    @Update("SET FOREIGN_KEY_CHECKS = 0; TRUNCATE TABLE message; SET FOREIGN_KEY_CHECKS = 1; ALTER TABLE message ALTER COLUMN idmessage RESTART WITH 1")
+    void truncateTableMessages();
+
+    @Update("SET FOREIGN_KEY_CHECKS = 0; TRUNCATE TABLE `group`; SET FOREIGN_KEY_CHECKS = 1; ALTER TABLE `group` ALTER COLUMN idgroup RESTART WITH 1")
+    void truncateTableGroups();
+
     @Update("TRUNCATE TABLE user; ALTER TABLE user ALTER COLUMN iduser RESTART WITH 1")
     void truncateTableUsers1();
-
-
 
     @Update("TRUNCATE TABLE user_group; ALTER TABLE user_group ALTER COLUMN iduser_group RESTART WITH 1;")
     void truncateTableUsersGroup();

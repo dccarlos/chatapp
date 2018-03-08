@@ -58,4 +58,14 @@ public class Message {
 
         return Objects.hash(idmessage, content, creation, idgroup);
     }
+
+    @Override
+    public String toString() {
+        return "Message{" +
+                "idmessage=" + idmessage +
+                ", content='" + content + '\'' +
+                ", creation=" + creation +
+                ", idgroup=" + idgroup +
+                '}';
+    }
 }
