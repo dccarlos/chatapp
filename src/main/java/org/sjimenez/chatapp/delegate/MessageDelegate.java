@@ -6,7 +6,7 @@ import org.sjimenez.chatapp.model.Message;
 
 public class MessageDelegate 
 {
-	public void sendMessageToGroup(String groupName, String messageContent)
+	public void sendMessageToGroup(String groupName, Message messageContent)
 	{
 		
 	}

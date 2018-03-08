@@ -5,8 +5,6 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.sjimenez.chatapp.delegate.GroupDelegate;
 import org.sjimenez.chatapp.model.Group;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,8 +32,6 @@ public class GroupController {
 
 	@Autowired
 	private GroupDelegate groupDelegate;
-
-	private static final Logger log = LoggerFactory.getLogger(GroupController.class);
 
 	/**
 	 * the creation Group method is responsible to create only the group without any
