@@ -7,7 +7,7 @@ import { showSignIn,showLogIn } from "./actions/actions";
 import SingInFormModal from "./components/modals/SingInFormModal";
 import LogInFormModal from "./components/modals/LogInFormModal";
 import { Panel, Button, ListGroup, ListGroupItem } from "react-bootstrap";
-import About from "./components/About"
+import Chat from "./components/Chat"
 import { Routes,Route} from 'react-router'
 
 import "./App.css";
