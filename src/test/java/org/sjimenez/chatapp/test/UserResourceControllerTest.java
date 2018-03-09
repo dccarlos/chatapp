@@ -29,7 +29,7 @@ import static org.mockito.Mockito.when;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
-@Sql(scripts = "classpath:testdata.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+//@Sql(scripts = "classpath:testdata.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
  public class UserResourceControllerTest {
     static private User user;
 
@@ -62,14 +62,11 @@ import static org.mockito.Mockito.when;
         user.setMail("sjc@gmail.com");
         user.setNickname("jackiechun");
         user.setBirthdate(date);
+
     }
 
     @After
     public void after(){
-        um.truncateTableMessages();
-        um.truncateTableGroups();
-        um.truncateTableUsers();
-        um.truncateTableUsersGroup();
     }
 
     @Test

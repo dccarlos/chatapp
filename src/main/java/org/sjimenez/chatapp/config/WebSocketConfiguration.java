@@ -15,7 +15,6 @@ public class WebSocketConfiguration extends AbstractWebSocketMessageBrokerConfig
                 .setAllowedOrigins("*")
                 .withSockJS();
     }
-
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         registry.setApplicationDestinationPrefixes("/app")

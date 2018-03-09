@@ -33,12 +33,10 @@ public class MessageDbMapperTest {
     @Autowired
     UserMapper userMapper;
 
-    private static final Logger logger = LoggerFactory.getLogger(UserDbMapperTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(MessageDbMapperTest.class);
 
     @Before
     public void initUnitTest() {
-
-
     }
     @After
     public void after(){
@@ -48,17 +46,14 @@ public class MessageDbMapperTest {
         userMapper.truncateTableUsersGroup();
     }
 
-
-
-
     @Test
-    public void selectAll(){
+    public void selectAllMessagesTest(){
         List<Message> messageList=messageMapper.selectAll();
         Assert.assertNotNull("Is null",messageList);
         System.out.println(messageList.size());
     }
     @Test
-    public void selectGroupByIdTest() {
+    public void insertMessageTest() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate date = LocalDate.parse("1999-05-05", formatter);
         int sizeBefore=messageMapper.selectAll().size();

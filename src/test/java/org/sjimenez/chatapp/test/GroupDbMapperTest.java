@@ -36,12 +36,12 @@ public class GroupDbMapperTest {
     @Autowired
     UserMapper userMapper;
 
-    private static final Logger logger = LoggerFactory.getLogger(UserDbMapperTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(GroupDbMapperTest.class);
 
     @Before
     public void initUnitTest() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         ////prepare user1
         LocalDate date = LocalDate.parse("1999-05-05", formatter);
 
@@ -83,15 +83,13 @@ public class GroupDbMapperTest {
         userMapper.truncateTableUsersGroup();
     }
 
-
-
     @Test
     public void selectGroupByIdTest() {
 
         List<Group> groupsList = groupMapper.selectAll();
         System.out.println(groupsList);
 
-        List<UserGroupRelation> userGroupRelations = groupMapper.selectAllUG();
+        List<UserGroupRelation> userGroupRelations = groupMapper.selectAllUserGroup();
         System.out.println(userGroupRelations.size());
 
         Group group = groupMapper.selectGroupById(1);
@@ -129,10 +127,10 @@ public class GroupDbMapperTest {
     public void deleteGroupTest() {
 
         int sizeBefore = groupMapper.selectAll().size();
-        int relationSizeBefore = groupMapper.selectAllUG().size();
+        int relationSizeBefore = groupMapper.selectAllUserGroup().size();
         groupMapper.deleteGroupById(1);
         int sizeAfter = groupMapper.selectAll().size();
-        int relationSizeAfter = groupMapper.selectAllUG().size();
+        int relationSizeAfter = groupMapper.selectAllUserGroup().size();
         Assert.assertNotEquals("Must not be equals", sizeBefore, sizeAfter);
         Assert.assertNotEquals("Must not be equals", relationSizeAfter, relationSizeBefore);
     }
@@ -146,9 +144,9 @@ public class GroupDbMapperTest {
 
     @Test
     public void insertUserGroupRelation() {
-        int relationSizeBefore = groupMapper.selectAllUG().size();
+        int relationSizeBefore = groupMapper.selectAllUserGroup().size();
         groupMapper.insertUserGroupRelation(1, 3);
-        int relationSizeAfter = groupMapper.selectAllUG().size();
+        int relationSizeAfter = groupMapper.selectAllUserGroup().size();
         Assert.assertEquals("Must not be equals", relationSizeBefore + 1, relationSizeAfter);
     }
 

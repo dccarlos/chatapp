@@ -22,7 +22,7 @@
     <!--<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<-->
 
     <!--Select all usergroups-->
-    <select id="selectAllUG" resultType="org.sjimenez.chatapp.model.UserGroupRelation">select * from chat.`user_group`
+    <select id="selectAllUserGroup" resultType="org.sjimenez.chatapp.model.UserGroupRelation">select * from chat.`user_group`
     </select>
 
     <!--<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<-->

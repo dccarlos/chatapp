@@ -17,7 +17,7 @@ public interface GroupMapper {
 
     List<Group> selectAll();
 
-    List<UserGroupRelation> selectAllUG();
+    List<UserGroupRelation> selectAllUserGroup();
 
     void insertGroup(Group group);
 
@@ -32,6 +32,5 @@ public interface GroupMapper {
     void deleteUserFromGroup(@Param("idgroup")int idgroup,@Param("iduser")int iduser);
 
     List<Message> selectMessagesFromGroup(int idgroup);
-    //////
-    User selectUserForGroup(int iduser);
+
 }
