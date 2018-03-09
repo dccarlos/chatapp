@@ -22,10 +22,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
     @Autowired
     private CustomAuthenticationHandler customAuthenticationHandler;
-
     @Autowired
     private CustomAuthenticationProvider customAuthenticationProvider;
-
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(customAuthenticationProvider);
@@ -39,12 +37,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.formLogin().loginPage("/").failureHandler(customAuthenticationHandler);
         http.csrf().disable();
         http.authorizeRequests().antMatchers("/","/login","/user/resources/insert").permitAll()
-        			//TODO:  Delete the following matchers because there are exposed only for testing purposes.
-        			.and().authorizeRequests().antMatchers("/group/*","/userToGroup/*", "/message/*","/messageToGroup/*").permitAll()
                 .anyRequest().authenticated();
         http.logout().logoutSuccessUrl("/");
     }
-
-
 
 }

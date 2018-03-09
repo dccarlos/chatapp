@@ -1,8 +1,6 @@
 package org.sjimenez.chatapp.test;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.sjimenez.chatapp.dao.ChatDao;
 import org.sjimenez.chatapp.mappers.UserMapper;
@@ -16,7 +14,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDate;
@@ -28,6 +28,7 @@ import static org.mockito.Mockito.when;
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
+@Sql(scripts = "classpath:testdata.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 public class UserResourceControllerSecurityTest {
     static private User user;
 
@@ -55,6 +56,13 @@ public class UserResourceControllerSecurityTest {
         user.setMail("sjc@gmail.com");
         user.setNickname("jackiechun");
         user.setBirthdate(date);
+    }
+    @After
+    public void after(){
+        userMapper.truncateTableMessages();
+        userMapper.truncateTableGroups();
+        userMapper.truncateTableUsers();
+        userMapper.truncateTableUsersGroup();
     }
 
     @Test()

@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,8 +19,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.sjimenez.chatapp.controllers.UserToGroupController;
 import org.sjimenez.chatapp.delegate.GroupDelegate;
+import org.sjimenez.chatapp.mappers.UserMapper;
 import org.sjimenez.chatapp.model.Group;
 import org.sjimenez.chatapp.model.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
@@ -55,10 +58,10 @@ public class UserToGroupControllerTest {
 	@Test
 	public void fetchUsersByGroupName()
 	{
-		when(groupDelegate.fetchUsersByGroupName(testGroupBean.getGroupName())).thenReturn(userList);
-		ResponseEntity<List<User>> responseEntity =  userToGroupController.fetchUsersByGroupName(testGroupBean.getGroupName());
+		when(groupDelegate.fetchUsersByGroupName(testGroupBean.getName())).thenReturn(userList);
+		ResponseEntity<List<User>> responseEntity =  userToGroupController.fetchUsersByGroupName(testGroupBean.getName());
 		
-		verify(groupDelegate, times(1)).fetchUsersByGroupName(testGroupBean.getGroupName());
+		verify(groupDelegate, times(1)).fetchUsersByGroupName(testGroupBean.getName());
 		assertArrayEquals(userList.toArray(), responseEntity.getBody().toArray());
 	}
 	
@@ -70,10 +73,10 @@ public class UserToGroupControllerTest {
 		newUsers.add(user.getIduser() );
 		userList.add(user);
 		
-		when(groupDelegate.addUserToGroup(testGroupBean.getGroupName(), newUsers)).thenReturn(userList);
-		ResponseEntity<List<User>> responseEntity =  userToGroupController.addUserToGroup(testGroupBean.getGroupName(), newUsers);
+		when(groupDelegate.addUserToGroup(testGroupBean.getName(), newUsers)).thenReturn(userList);
+		ResponseEntity<List<User>> responseEntity =  userToGroupController.addUserToGroup(testGroupBean.getName(), newUsers);
 		
-		verify(groupDelegate).addUserToGroup(testGroupBean.getGroupName(), newUsers);
+		verify(groupDelegate).addUserToGroup(testGroupBean.getName(), newUsers);
 		assertArrayEquals(userList.toArray(), responseEntity.getBody().toArray());
 	}
 	
@@ -85,19 +88,19 @@ public class UserToGroupControllerTest {
 		removeUsers.add(user.getIduser() );
 		userList.remove(user);
 		
-		when(groupDelegate.removeUserFromGroup(testGroupBean.getGroupName(), removeUsers)).thenReturn(userList);
-		ResponseEntity<List<User>> responseEntity =  userToGroupController.removeUserFromGroup(testGroupBean.getGroupName(), removeUsers);
+		when(groupDelegate.removeUserFromGroup(testGroupBean.getName(), removeUsers)).thenReturn(userList);
+		ResponseEntity<List<User>> responseEntity =  userToGroupController.removeUserFromGroup(testGroupBean.getName(), removeUsers);
 		
-		verify(groupDelegate).removeUserFromGroup(testGroupBean.getGroupName(), removeUsers);
+		verify(groupDelegate).removeUserFromGroup(testGroupBean.getName(), removeUsers);
 		assertArrayEquals(userList.toArray(), responseEntity.getBody().toArray());
 	}
 	
 	
 	private Group createGroupForTest(String groupName) {
 		Group group = new Group();
-		group.setGroupName(groupName);
-		group.setCreatedDate(LocalDate.now());
-		group.setGroupId(1);
+		group.setName(groupName);
+		group.setCreation(LocalDate.now());
+		group.setIdgroup(1);
 
 		return group;
 	}
