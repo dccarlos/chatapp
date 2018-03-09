@@ -39,6 +39,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.formLogin().loginPage("/").failureHandler(customAuthenticationHandler);
         http.csrf().disable();
         http.authorizeRequests().antMatchers("/","/login","/user/resources/insert").permitAll()
+        			//TODO:  Delete the following matchers because there are exposed only for testing purposes.
+        			.and().authorizeRequests().antMatchers("/group/*","/userToGroup/*", "/message/*","/messageToGroup/*").permitAll()
                 .anyRequest().authenticated();
         http.logout().logoutSuccessUrl("/");
     }
