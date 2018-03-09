@@ -1,12 +1,10 @@
 package org.sjimenez.chatapp.test;
 
 
-import org.junit.Ignore;
+import org.junit.*;
+import org.sjimenez.chatapp.mappers.GroupMapper;
 import org.sjimenez.chatapp.mappers.UserMapper;
 import org.sjimenez.chatapp.model.User;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,15 +27,22 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class UserDbMapperTest {
+@Sql(scripts = "classpath:testdata.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+ public class UserDbMapperTest {
     private User user;
 
     @Autowired
     private UserMapper userMapper;
+
+
+    @Autowired
+    GroupMapper groupMapper;
+
     private static final Logger logger = LoggerFactory.getLogger(UserDbMapperTest.class);
 
     @Before
     public void initUnitTest() {
+        userMapper.truncateTableUsersGroup();
         userMapper.truncateTableUsers();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate date = LocalDate.parse("2005-06-12", formatter);
@@ -47,6 +52,13 @@ public class UserDbMapperTest {
         user.setMail("sjc@gmail.com");
         user.setNickname("jackiechun");
         user.setBirthdate(date);
+    }
+    @After
+    public void after(){
+        userMapper.truncateTableMessages();
+        userMapper.truncateTableGroups();
+        userMapper.truncateTableUsers();
+        userMapper.truncateTableUsersGroup();
     }
 
     @Test

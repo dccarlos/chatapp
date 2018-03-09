@@ -11,14 +11,14 @@ import { ConnectedRouter } from "react-router-redux";
 import { store,history } from "./store/store";
 import { Router,browserHistory } from "react-router";
 import { syncHistoryWithStore, routerReducer } from "react-router-redux";
-import About from "./components/About";
+import Chat from "./components/Chat";
 
 ReactDOM.render(
   <Provider store={store}>
     <ConnectedRouter history={history}>
       <Switch>
         <Route exact path="/" component={App} />
-        <Route exact path="/chat" component={About} />
+        <Route exact path="/chat" component={Chat} />
       </Switch>
     </ConnectedRouter>
   </Provider>,

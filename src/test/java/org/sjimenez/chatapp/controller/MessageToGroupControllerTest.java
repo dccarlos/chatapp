@@ -8,6 +8,7 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,7 +16,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.sjimenez.chatapp.controllers.MessageToGroupController;
 import org.sjimenez.chatapp.delegate.MessageDelegate;
+import org.sjimenez.chatapp.mappers.UserMapper;
 import org.sjimenez.chatapp.model.Message;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
@@ -39,7 +42,7 @@ public class MessageToGroupControllerTest {
 	@Before
 	public void init() {
 		message = new Message();
-		message.setContentMessage("New Message");
+		message.setContent("New Message");
 	}
 	
 	@Test

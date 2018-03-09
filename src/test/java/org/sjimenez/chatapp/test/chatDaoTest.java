@@ -1,17 +1,19 @@
 package org.sjimenez.chatapp.test;
 
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.sjimenez.chatapp.dao.ChatDao;
+import org.sjimenez.chatapp.mappers.GroupMapper;
 import org.sjimenez.chatapp.mappers.UserMapper;
 import org.sjimenez.chatapp.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.SqlGroup;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.time.LocalDate;
@@ -23,16 +25,20 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class chatDaoTest {
+@Sql(scripts = "classpath:testdata.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+ public class chatDaoTest {
     private User user;
     @Autowired
     ChatDao chatDao;
     @Autowired
-    UserMapper userMapper;
+      UserMapper userMapper;
+
+
     private static final Logger logger = LoggerFactory.getLogger(UserDbMapperTest.class);
 
     @Before
     public void initUnitTest() {
+        userMapper.truncateTableUsersGroup();
         userMapper.truncateTableUsers();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate date = LocalDate.parse("2005-06-12", formatter);
@@ -43,6 +49,15 @@ public class chatDaoTest {
         user.setNickname("jackiechun");
         user.setBirthdate(date);
     }
+    @After
+    public void after(){
+        userMapper.truncateTableMessages();
+        userMapper.truncateTableGroups();
+        userMapper.truncateTableUsers();
+        userMapper.truncateTableUsersGroup();
+    }
+
+
 
     @Test
     public void insertUser() {
