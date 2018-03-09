@@ -1,3 +1,12 @@
+
+SET FOREIGN_KEY_CHECKS = 0; TRUNCATE TABLE user; SET FOREIGN_KEY_CHECKS = 1; ALTER TABLE user ALTER COLUMN iduser RESTART WITH 1;
+
+ SET FOREIGN_KEY_CHECKS = 0; TRUNCATE TABLE message; SET FOREIGN_KEY_CHECKS = 1; ALTER TABLE message ALTER COLUMN idmessage RESTART WITH 1;
+
+SET FOREIGN_KEY_CHECKS = 0; TRUNCATE TABLE `group`; SET FOREIGN_KEY_CHECKS = 1; ALTER TABLE `group` ALTER COLUMN idgroup RESTART WITH 1;
+
+TRUNCATE TABLE user_group; ALTER TABLE user_group ALTER COLUMN iduser_group RESTART WITH 1;
+
 --Inserts in users table
 INSERT INTO `user`(name,lastName,mail,nickname,birthdate) VALUES('name1','last1','ss1@ss1.com','nick1','1999-05-05');
 INSERT INTO `user`(name,lastName,mail,nickname,birthdate) VALUES('name2','last2','ss2@ss2.com','nick2','1999-05-05');

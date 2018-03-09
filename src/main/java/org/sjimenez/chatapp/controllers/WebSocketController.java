@@ -22,7 +22,7 @@ public class WebSocketController {
 
     @MessageMapping("/send/message")
     public void onReceivedMesage(String message,Principal principal){
-        //this.template.convertAndSend("/chat",  new SimpleDateFormat("HH:mm:ss").format(new Date())+"- "+message);
+        //+-++this.template.convertAndSend("/chat",  new SimpleDateFormat("HH:mm:ss").format(new Date())+"- "+message);
         this.template.convertAndSend("/chat",new ChatMessage(principal.getName(),message));
     }
 }
