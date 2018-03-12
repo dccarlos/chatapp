@@ -91,6 +91,16 @@
         from chat.user_group inner join chat.user on chat.user.iduser=chat.user_group.iduser_user_group
         and chat.user_group.idgroup_user_group=#{idgroup};
     </select>
+    <!--<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<-->
+
+    <!--select all the users in the group-->
+    <select id="selectUsersById" resultType="org.sjimenez.chatapp.model.User">
+        select distinct
+        chat.user.iduser,chat.user.name,chat.user.lastName,chat.user.mail,chat.user.nickname,chat.user.birthdate
+        from chat.user_group inner join chat.user on chat.user.iduser=chat.user_group.iduser_user_group
+        and chat.user_group.idgroup_user_group=#{idgroup};
+    </select>
+
 
     <!--<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<-->
 
