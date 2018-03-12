@@ -67,13 +67,16 @@ let AppPanel = (function() {
       this.serverUrl = "http://localhost:8080/socket";
       this.title = "WebSockets chat";
       this.stompClient;
+      this.user_name;
 
       this.initializeWebSocketConnection = this.initializeWebSocketConnection.bind(this);
       this.sendMessage = this.sendMessage.bind(this);
       this.printInConsole = this.printInConsole.bind(this);
       this.connect = this.connect.bind(this);
+      this.showlog = this.showlog.bind(this);
       this.append = this.append.bind(this);
       this.onResponse=this.onResponse.bind(this);
+      this.loadGroups=this.loadGroups.bind(this);
       this.initializeWebSocketConnection(this.onConnection, this.onResponse);
 
       this.state = {
@@ -84,8 +87,30 @@ let AppPanel = (function() {
       };
     }
 
+    componentWillMount(){
+
+        
+
+
+
+
+    }
+
+
+
+
     connect() {
       this.initializeWebSocketConnection();
+    }
+    showlog(event,id){
+        console.log(event)
+        console.log(id)
+        console.log("log")
+    }
+    loadGroups(){
+        console.log("loading groups")
+
+
     }
 
     initializeWebSocketConnection(onConnectionCallback, onResponseCallback) {
@@ -94,6 +119,13 @@ let AppPanel = (function() {
       this.stompClient = Stomp.over(ws);
       let that = this;
       this.stompClient.connect({}, function(frame) {
+          console.log(frame)
+          console.dir(frame)
+        console.log("frame"+frame);
+        this.user_name=frame.headers;
+        console.log("username"+this.user_name);
+        console.dir(this.user_name["user-name"])
+        loadGroups();
         that.stompClient.subscribe("/chat", message => {
           if (message.body) {
             onResponseCallback(message);
@@ -102,7 +134,6 @@ let AppPanel = (function() {
         });
       });
     }
-
     sendMessage(message) {
       this.stompClient.send("/app/send/message", {}, message);
     }
@@ -140,10 +171,9 @@ let AppPanel = (function() {
 
     render() {
       let messages = this.state.messages.map(message => {
-        return (
-          <tr key={message.id}>
-          
-            <td>{message.name}-{message.text}</td>
+        return(
+          <tr key={message.id}>  
+            <td name={message.name}><Button onClick={this.showlog.bind(this,message.name,message.id)}>{message.name}-{message.text}</Button></td>
           </tr>
         );
       });
@@ -159,11 +189,45 @@ let AppPanel = (function() {
               striped
               style={{ wordWrap: "break-word", tableLayout: "fixed" }}
             >
-              <tbody>
+              <tbody >
                 <tr>
                   <th style={{ width: "100%" }}>Messages</th>
                 </tr>
                 {messages}
+              </tbody>
+            </Table>
+          </div>
+        </Panel>
+      );
+
+
+      ////Groups
+      let groups = this.state.messages.map(message => {
+        return (
+          <tr key={message.id} >
+          
+            <td >{message.name}-{message.text}</td>
+          </tr>
+        );
+      });
+
+      ////GroupsList
+      let groupList = (
+        <Panel>
+          <div style={{ overflowY: "scroll", height: "500px" }}>
+            <Table
+              bordered
+              condensed
+              hover
+              responsive
+              striped
+              style={{ wordWrap: "break-word", tableLayout: "fixed" }}
+            >
+              <tbody>
+                <tr>
+                  <th style={{ width: "100%" }}>Groups</th>
+                </tr>
+                {groups}
               </tbody>
             </Table>
           </div>
