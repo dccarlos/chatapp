@@ -96,4 +96,4 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
 
 
-TRUNCATE TABLE user_group_jeringas
+

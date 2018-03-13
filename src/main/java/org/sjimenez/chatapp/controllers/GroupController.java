@@ -49,8 +49,10 @@ public class GroupController {
 	 * This method is responsible to fetch the Group information based on the group
 	 * name, and get the users assigned to it.
 	 */
-	@GetMapping("/{groupName}")
+	@GetMapping("/uno/{groupName}")
 	public ResponseEntity<Group> fetchGroupByName(@PathVariable("groupName") @NotEmpty @NotNull String groupName) {
+
+		System.out.println("log");
 		return new ResponseEntity<Group>(groupDelegate.fetchGroupByName(groupName), HttpStatus.OK);
 	}
 

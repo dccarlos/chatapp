@@ -69,46 +69,59 @@ let AppPanel = (function() {
       this.stompClient;
       this.user_name;
 
-      this.initializeWebSocketConnection = this.initializeWebSocketConnection.bind(this);
+      this.initializeWebSocketConnection = this.initializeWebSocketConnection.bind(
+        this
+      );
       this.sendMessage = this.sendMessage.bind(this);
       this.printInConsole = this.printInConsole.bind(this);
       this.connect = this.connect.bind(this);
       this.showlog = this.showlog.bind(this);
       this.append = this.append.bind(this);
-      this.onResponse=this.onResponse.bind(this);
-      this.loadGroups=this.loadGroups.bind(this);
+      this.onResponse = this.onResponse.bind(this);
       this.initializeWebSocketConnection(this.onConnection, this.onResponse);
 
       this.state = {
         response: "",
         request: "",
         messages: [],
+        groups: [],
         isConnected: false
       };
     }
 
-    componentWillMount(){
-
-        
-
-
-
-
-    }
-
-
-
+    componentWillMount() {}
 
     connect() {
-      this.initializeWebSocketConnection();
+     // this.initializeWebSocketConnection();
+     this.loadGroups();
     }
-    showlog(event,id){
-        console.log(event)
-        console.log(id)
-        console.log("log")
+    showlog(event, id) {
+      console.log(event);
+      console.log(id);
+      console.log("log");
     }
-    loadGroups(){
-        console.log("loading groups")
+
+    loadGroups() {
+      var thiss=this
+      let groups = this.state.groups;
+
+      fetch("http://localhost:8080/group/uno/groupname1", {
+        credentials: "same-origin"
+      })
+        .then(function(response) {
+          //return response.json();
+          return response.json();
+        })
+        .then(function(myJson) {
+          /*
+          thiss.setState({
+            groups: groups.concat(myJson)
+          });*/
+          console.log(myJson);
+        })
+        .catch((error)=>{console.log('Error')})
+
+
 
 
     }
@@ -119,13 +132,13 @@ let AppPanel = (function() {
       this.stompClient = Stomp.over(ws);
       let that = this;
       this.stompClient.connect({}, function(frame) {
-          console.log(frame)
-          console.dir(frame)
-        console.log("frame"+frame);
-        this.user_name=frame.headers;
-        console.log("username"+this.user_name);
-        console.dir(this.user_name["user-name"])
-        loadGroups();
+        console.log(frame);
+        console.dir(frame);
+        console.log("frame" + frame);
+        this.user_name = frame.headers;
+        console.log("username" + this.user_name);
+        console.dir(this.user_name["user-name"]);
+        that.loadGroups();
         that.stompClient.subscribe("/chat", message => {
           if (message.body) {
             onResponseCallback(message);
@@ -147,11 +160,15 @@ let AppPanel = (function() {
     onResponse(message) {
       console.log("On response callback");
       console.log(message);
-      var msg = { name:JSON.parse(message.body).name,text:JSON.parse(message.body).message , id: message.headers['message-id'] };
-      console.log(msg)
-      console.dir(msg)
+      var msg = {
+        name: JSON.parse(message.body).name,
+        text: JSON.parse(message.body).message,
+        id: message.headers["message-id"]
+      };
+      console.log(msg);
+      console.dir(msg);
       console.log("append");
-      console.log(this)
+      console.log(this);
       let messages = this.state.messages;
       this.setState({
         messages: messages.concat(msg)
@@ -171,9 +188,15 @@ let AppPanel = (function() {
 
     render() {
       let messages = this.state.messages.map(message => {
-        return(
-          <tr key={message.id}>  
-            <td name={message.name}><Button onClick={this.showlog.bind(this,message.name,message.id)}>{message.name}-{message.text}</Button></td>
+        return (
+          <tr key={message.id}>
+            <td name={message.name}>
+              <Button
+                onClick={this.showlog.bind(this, message.name, message.id)}
+              >
+                {message.name}-{message.text}
+              </Button>
+            </td>
           </tr>
         );
       });
@@ -189,7 +212,7 @@ let AppPanel = (function() {
               striped
               style={{ wordWrap: "break-word", tableLayout: "fixed" }}
             >
-              <tbody >
+              <tbody>
                 <tr>
                   <th style={{ width: "100%" }}>Messages</th>
                 </tr>
@@ -200,13 +223,13 @@ let AppPanel = (function() {
         </Panel>
       );
 
-
       ////Groups
-      let groups = this.state.messages.map(message => {
+      let groups = this.state.groups.map(group => {
         return (
-          <tr key={message.id} >
-          
-            <td >{message.name}-{message.text}</td>
+          <tr key={group.idgroup}>
+            <td>
+              {group.name}-{group.creation}
+            </td>
           </tr>
         );
       });
@@ -255,6 +278,9 @@ let AppPanel = (function() {
             </Col>
             <Col md={8} xs={9}>
               {messageList}
+            </Col>
+            <Col md={8} xs={9}>
+              {groupList}
             </Col>
           </Row>
         </Grid>
