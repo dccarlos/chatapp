@@ -3,6 +3,7 @@ package org.sjimenez.chatapp.dao;
 
 import org.apache.ibatis.annotations.*;
 import org.sjimenez.chatapp.mappers.UserMapper;
+import org.sjimenez.chatapp.model.Group;
 import org.sjimenez.chatapp.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -45,6 +46,10 @@ public class ChatDao {
 
     public User selectUserByMail(String mail) throws org.springframework.dao.DataAccessException {
         return userMapper.selectUserByMail(mail);
+    }
+
+    public List<Group> selectGroupsFromUserById(int iduser) throws org.springframework.dao.DataAccessException {
+        return userMapper.selectGroupsFromUserById(iduser);
     }
 
 }

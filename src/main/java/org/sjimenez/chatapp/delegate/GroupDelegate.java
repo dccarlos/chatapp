@@ -15,6 +15,7 @@ import org.sjimenez.chatapp.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import javax.persistence.EntityNotFoundException;
@@ -29,6 +30,8 @@ public class GroupDelegate {
     ChatDao chatDao;
 
     public Group createGroup(String groupName) {
+        Optional<Group> optionalGroup = groupDao.selectGroupByName(groupName);
+        if (!optionalGroup.isPresent()) throw new DuplicateKeyException("Duplicate group name");
         LocalDate.now();
         Group group = new Group();
         group.setName(groupName);
@@ -41,10 +44,13 @@ public class GroupDelegate {
         return groupDao.selectGroupByName(groupName).get();
     }
 
+
+
     public Group updateGroupByName(String groupName, String newGroupName) {
         Optional<Group> group = groupDao.selectGroupByName(groupName);
-        if (!group.isPresent()) return null;
-        else groupDao.updateGroup(newGroupName, groupName);
+        if (!group.isPresent()) {
+            throw new EntityNotFoundException();
+        } else groupDao.updateGroup(newGroupName, groupName);
         return group.get();
     }
 
@@ -87,7 +93,7 @@ public class GroupDelegate {
         userIdList.forEach((iduser) -> {
             Optional<User> user = Optional.ofNullable(chatDao.selectUserById(iduser));
             if (!user.isPresent())
-                logger.warn("User with id " + iduser+" was not inserted in group because doesnt exist");
+                logger.warn("User with id " + iduser + " was not inserted in group because doesnt exist");
             groupDao.insertUserGroupRelation(idgroup, iduser);
         });
         return groupDao.selectUsersById(idgroup);

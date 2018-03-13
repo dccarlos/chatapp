@@ -4,6 +4,7 @@ package org.sjimenez.chatapp.test;
 import org.junit.*;
 import org.sjimenez.chatapp.mappers.GroupMapper;
 import org.sjimenez.chatapp.mappers.UserMapper;
+import org.sjimenez.chatapp.model.Group;
 import org.sjimenez.chatapp.model.User;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -60,6 +61,9 @@ import static org.junit.Assert.assertEquals;
         userMapper.truncateTableUsers();
         userMapper.truncateTableUsersGroup();
     }
+
+
+
 
     @Test
     public void insertUser() {

@@ -68,6 +68,8 @@ let AppPanel = (function() {
       this.title = "WebSockets chat";
       this.stompClient;
       this.user_name;
+      this.subscription;
+      this.currentChat;
 
       this.initializeWebSocketConnection = this.initializeWebSocketConnection.bind(
         this
@@ -92,20 +94,57 @@ let AppPanel = (function() {
     componentWillMount() {}
 
     connect() {
-     // this.initializeWebSocketConnection();
-     this.loadGroups();
+      // this.initializeWebSocketConnection();
+      this.loadGroups();
     }
     showlog(event, id) {
       console.log(event);
       console.log(id);
       console.log("log");
     }
+    loadGroupsFromUser() {
+      console.log("loadGroupFromUser");
+      var thiss = this;
+      let groups = this.state.groups;
+      console.log("user_name" + thiss.user_name);
+      fetch(
+        `http://localhost:8080/user/resources/selectgroups/${this.user_name}`,
+        {
+          credentials: "same-origin"
+        }
+      )
+        .then(function(response) {
+          return response.json();
+        })
+        .then(function(myJson) {
+          console.log(myJson);
+
+          thiss.setState({
+            groups: myJson
+          });
+
+          /*
+
+
+          thiss.setState({
+            groups: groups.concat(myJson)
+          });*/
+
+          console.log(myJson);
+        })
+        .catch(error => {
+          console.log("Error");
+        });
+    }
 
     loadGroups() {
-      var thiss=this
-      let groups = this.state.groups;
+      console.log("loadGroupFromUser" + this.user_name);
 
-      fetch("http://localhost:8080/group/uno/groupname1", {
+      var thiss = this;
+      let groups = this.state.groups;
+      this.loadGroupsFromUser();
+      /*
+      fetch("http://localhost:8080/group/groupname1", {
         credentials: "same-origin"
       })
         .then(function(response) {
@@ -113,17 +152,76 @@ let AppPanel = (function() {
           return response.json();
         })
         .then(function(myJson) {
-          /*
           thiss.setState({
             groups: groups.concat(myJson)
-          });*/
+          });
           console.log(myJson);
         })
-        .catch((error)=>{console.log('Error')})
+        .catch(error => {
+          console.log("Error");
+        });*/
+    }
+    changeWebSocketConnection(onConnectionCallback,onResponseCallback,groupname) {
+      if (this.subscription != null) {
+        console.log("unsubscribe");
+        this.subscription.unsubscribe();
+      }
+      console.dir(this.subscription);
+      console.log("change");
+
+      console.log(this.serverUrl);
+      let ws = new SockJS(this.serverUrl);
+      this.stompClient = Stomp.over(ws);
+      let that = this;
+
+      /*
+        that.subscription=that.stompClient.subscribe(`/${groupname}`, message => {
+            console.log('responseresponse')
+          if (message.body) {
+            onResponseCallback(message);
+            console.log("MessageReceivedchange" + message.body);
+          }
+        });*/
+
+        
+      //this.stompClient.disconnect(()=>{console.log('disconnect')},{})  
+
+
+      this.stompClient.connect({}, function(frame) {
+        console.log(frame);
+        console.dir(frame);
+        console.log("frame" + frame);
+        that.user_name = frame.headers["user-name"];
+        console.log("username" + that.user_name);
+        console.dir(this.user_name);
+        that.subscription = that.stompClient.subscribe(
+         // `/${groupname}`,
+         `/chat/${groupname}`,
+          message => {
+            console.log("responseresponse");
+            if (message.body) {
+              onResponseCallback(message);
+              console.log("MessageReceivedchange" + message.body);
+            }
+          }
+        );
+      });
+
+/////////////
+
+    }
+
+    onGroupClick(idgroup, name, creation) {
+
+        thiss.setState({
+            messages: []
+          });
 
 
 
-
+      this.changeWebSocketConnection(this.onConnection, this.onResponse, name);
+      console.log("onGroupClick", name);
+    this.currentChat=name;
     }
 
     initializeWebSocketConnection(onConnectionCallback, onResponseCallback) {
@@ -131,15 +229,15 @@ let AppPanel = (function() {
       let ws = new SockJS(this.serverUrl);
       this.stompClient = Stomp.over(ws);
       let that = this;
-      this.stompClient.connect({}, function(frame) {
+      this.stompClient.connect({}, function(frame) {    
         console.log(frame);
         console.dir(frame);
         console.log("frame" + frame);
-        this.user_name = frame.headers;
-        console.log("username" + this.user_name);
-        console.dir(this.user_name["user-name"]);
+        that.user_name = frame.headers["user-name"];
+        console.log("usernameee" + that.user_name);
+        console.dir(that.user_name);
         that.loadGroups();
-        that.stompClient.subscribe("/chat", message => {
+        that.subscription = that.stompClient.subscribe("/chat", message => {
           if (message.body) {
             onResponseCallback(message);
             console.log("MessageReceived" + message.body);
@@ -152,7 +250,9 @@ let AppPanel = (function() {
     }
     printInConsole() {
       var message = this.refs.MessageForm.state.name;
-      this.stompClient.send("/app/send/message", {}, message);
+      console.log('client'+this.stompClient)
+      console.dir(this.stompClient)
+      this.stompClient.send(`/app/send/message/${this.currentChat}`, {}, message);
       console.log(this.refs.MessageForm.state.name);
     }
     onConnection() {}
@@ -228,7 +328,16 @@ let AppPanel = (function() {
         return (
           <tr key={group.idgroup}>
             <td>
-              {group.name}-{group.creation}
+              <Button
+                onClick={this.onGroupClick.bind(
+                  this,
+                  group.idgroup,
+                  group.name,
+                  group.creation
+                )}
+              >
+                {group.name}-{group.creation}
+              </Button>
             </td>
           </tr>
         );

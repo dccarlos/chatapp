@@ -11,16 +11,14 @@
        See the License for the specific language governing permissions and
        limitations under the License.
 -->
-<!DOCTYPE configuration
-        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-config.dtd">
-<configuration>
-    <typeAliases>
-        <package name="org.sjimenez.chatapp.model"/>
-    </typeAliases>
-    <mappers>
-        <mapper resource="org/sjimenez/chatapp/mappers/GroupMapper.xml"/>
-        <mapper resource="org/sjimenez/chatapp/mappers/MessageMapper.xml"/>
-        <mapper resource="org/sjimenez/chatapp/mappers/UserMapper.xml"/>
-    </mappers>
-</configuration>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.sjimenez.chatapp.mappers.UserMapper">
+    <!--get all messages of a group-->
+    <select id="selectGroupsFromUserById" resultType="org.sjimenez.chatapp.model.Group">
+        select distinct  chat.`group`.idgroup,chat.`group`.name,chat.`group`.creation
+        from chat.user_group inner join chat.`group` on chat.`group`.idgroup=chat.user_group.idgroup_user_group
+        and chat.user_group.iduser_user_group=#{iduser};
+    </select>
+</mapper>

@@ -45,6 +45,12 @@ public class ChatControllerErrorHandler {
 				.map(FieldError::getDefaultMessage).collect(Collectors.toList()));
 	}
 
+
+
+
+
+
+
 	/**
 	 * Exception Handler used on the http methods that receive parameters like Query
 	 * or Path Variables

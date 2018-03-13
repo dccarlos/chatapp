@@ -1,5 +1,6 @@
 package org.sjimenez.chatapp.mappers;
 
+        import org.sjimenez.chatapp.model.Group;
         import org.sjimenez.chatapp.model.User;
         import org.apache.ibatis.annotations.*;
 
@@ -30,6 +31,9 @@ public interface UserMapper {
 
     @Select("SELECT iduser,name,lastName,mail,nickName,birthdate from user WHERE mail = #{mail}")
     User selectUserByMail(String mail);
+
+    List<Group> selectGroupsFromUserById(int iduser);
+
 
     @Update("SET FOREIGN_KEY_CHECKS = 0; TRUNCATE TABLE user; SET FOREIGN_KEY_CHECKS = 1; ALTER TABLE user ALTER COLUMN iduser RESTART WITH 1")
     void truncateTableUsers();

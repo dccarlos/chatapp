@@ -164,4 +164,6 @@
         from chat.message inner join chat.`group` on chat.message.idgroup_message=chat.`group`.idgroup and
         chat.message.idgroup_message=#{idgroup};
     </select>
+
+
 </mapper>
