@@ -12,6 +12,7 @@ import org.sjimenez.chatapp.dao.GroupDao;
 import org.sjimenez.chatapp.mappers.GroupMapper;
 import org.sjimenez.chatapp.model.Group;
 import org.sjimenez.chatapp.model.User;
+import org.sjimenez.chatapp.model.UserGroupRelation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +32,10 @@ public class GroupDelegate {
 
     public Group createGroup(String groupName) {
         Optional<Group> optionalGroup = groupDao.selectGroupByName(groupName);
-        if (!optionalGroup.isPresent()) throw new DuplicateKeyException("Duplicate group name");
-        LocalDate.now();
+        if (!optionalGroup.isPresent()) {
+            logger.warn("Duplicate group name");
+            throw new DuplicateKeyException("Duplicate group name");
+        }
         Group group = new Group();
         group.setName(groupName);
         group.setCreation(LocalDate.now());
@@ -45,18 +48,20 @@ public class GroupDelegate {
     }
 
 
-
     public Group updateGroupByName(String groupName, String newGroupName) {
         Optional<Group> group = groupDao.selectGroupByName(groupName);
         if (!group.isPresent()) {
+            logger.warn("Group not found");
             throw new EntityNotFoundException();
-        } else groupDao.updateGroup(newGroupName, groupName);
+        }
+        groupDao.updateGroup(newGroupName, groupName);
         return group.get();
     }
 
     public void deleteGroupByName(String groupName) {
         Optional<Group> group = groupDao.selectGroupByName(groupName);
         if (!group.isPresent()) {
+            logger.warn("Group not found");
             throw new EntityNotFoundException();
         }
         groupDao.deleteGroupById(group.get().getIdgroup());
@@ -64,20 +69,24 @@ public class GroupDelegate {
 
     public List<User> fetchUsersByGroupName(String groupName) {
         Optional<Group> group = groupDao.selectGroupByName(groupName);
-        if (!group.isPresent()) {
-            throw new EntityNotFoundException();
-        }
+        if (!group.isPresent()) throw new EntityNotFoundException();
         return groupDao.selectUsersById(group.get().getIdgroup());
     }
 
     public List<User> addUserToGroup(String groupName, List<Integer> userIdList) {
         Optional<Group> group = groupDao.selectGroupByName(groupName);
         if (!group.isPresent()) {
+            logger.warn("Group not found");
             throw new EntityNotFoundException();
         }
         int idgroup = group.get().getIdgroup();
         userIdList.forEach((iduser) -> {
-            groupDao.insertUserGroupRelation(idgroup, iduser);
+            Optional<UserGroupRelation> userGroupRelation = groupDao.selectUserGroupRelation(idgroup, iduser);
+            if (!userGroupRelation.isPresent())
+                groupDao.insertUserGroupRelation(idgroup, iduser);
+            else {
+                logger.warn("User with id " + iduser + " already exist in group " + idgroup);
+            }
         });
         return groupDao.selectUsersById(idgroup);
     }

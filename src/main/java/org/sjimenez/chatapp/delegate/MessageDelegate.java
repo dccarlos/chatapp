@@ -13,34 +13,32 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.persistence.EntityNotFoundException;
 
-public class MessageDelegate 
-{
-	private static final Logger logger = LoggerFactory.getLogger(MessageDelegate.class);
-	@Autowired
-	GroupDao groupDao;
-	@Autowired
-	MessageDao messageDao;
+public class MessageDelegate {
+    private static final Logger logger = LoggerFactory.getLogger(MessageDelegate.class);
+    @Autowired
+    GroupDao groupDao;
+    @Autowired
+    MessageDao messageDao;
 
 
-	public void sendMessageToGroup(String groupName, Message messageContent)
-	{
-		Optional<Group> group = groupDao.selectGroupByName(groupName);
-		if (!group.isPresent()) {
-			logger.warn("Group not found");
-			throw new EntityNotFoundException();
-		}
-		int idgroup = group.get().getIdgroup();
-		messageContent.setIdgroup(idgroup);
-		messageDao.insertMessage(messageContent);
-	}
-	
-	public List<Message> fetchAllMessagesFromGroup(String groupName)
-	{        Optional<Group> group = groupDao.selectGroupByName(groupName);
-		if (!group.isPresent()) {
-			logger.warn("Group not found");
-			throw new EntityNotFoundException();
-		}
-		int idgroup=group.get().getIdgroup();
-		return groupDao.selectMessagesFromGroup(idgroup);
-	}
+    public void sendMessageToGroup(String groupName, Message messageContent) {
+        Optional<Group> group = groupDao.selectGroupByName(groupName);
+        if (!group.isPresent()) {
+            logger.warn("Group not found");
+            throw new EntityNotFoundException();
+        }
+        int idgroup = group.get().getIdgroup();
+        messageContent.setIdgroup(idgroup);
+        messageDao.insertMessage(messageContent);
+    }
+
+    public List<Message> fetchAllMessagesFromGroup(String groupName) {
+        Optional<Group> group = groupDao.selectGroupByName(groupName);
+        if (!group.isPresent()) {
+            logger.warn("Group not found");
+            throw new EntityNotFoundException();
+        }
+        int idgroup = group.get().getIdgroup();
+        return groupDao.selectMessagesFromGroup(idgroup);
+    }
 }

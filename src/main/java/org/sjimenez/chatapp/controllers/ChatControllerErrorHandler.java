@@ -1,13 +1,17 @@
 package org.sjimenez.chatapp.controllers;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Map;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityNotFoundException;
 import javax.validation.ConstraintViolationException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.FieldError;
@@ -44,13 +48,6 @@ public class ChatControllerErrorHandler {
 		return error(methodArgumentNotValidException.getBindingResult().getFieldErrors().stream()
 				.map(FieldError::getDefaultMessage).collect(Collectors.toList()));
 	}
-
-
-
-
-
-
-
 	/**
 	 * Exception Handler used on the http methods that receive parameters like Query
 	 * or Path Variables
@@ -68,7 +65,35 @@ public class ChatControllerErrorHandler {
 				.collect(Collectors.toList()));
 	}
 
-	
+	/**
+	 * Exception Handler used on the http methods that receive parameters like Query
+	 * or Path Variables
+	 *
+	 * @param duplicateKeyException
+	 * @return
+	 */
+	@ExceptionHandler
+	@ResponseBody
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public Map<String, Object> handle(DuplicateKeyException duplicateKeyException) {
+		return error(duplicateKeyException.getStackTrace());
+	}
+
+	/**
+	 * Exception Handler used on the http methods that receive parameters like Query
+	 * or Path Variables
+	 *
+	 * @param entityNotFoundException
+	 * @return
+	 */
+	@ExceptionHandler
+	@ResponseBody
+	@ResponseStatus(HttpStatus.NOT_FOUND)
+	public Map<String, Object> handle(EntityNotFoundException entityNotFoundException) {
+		return error(entityNotFoundException.getStackTrace());
+	}
+
+
 	private Map<String, Object> error(Object message) {
 		LOG.warn(message.toString());
 		return Collections.singletonMap("error", message);
