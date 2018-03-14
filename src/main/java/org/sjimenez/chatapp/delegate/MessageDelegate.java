@@ -41,4 +41,5 @@ public class MessageDelegate {
         int idgroup = group.get().getIdgroup();
         return groupDao.selectMessagesFromGroup(idgroup);
     }
+
 }

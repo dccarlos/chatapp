@@ -93,7 +93,6 @@ public class ChatControllerErrorHandler {
 		return error(entityNotFoundException.getStackTrace());
 	}
 
-
 	private Map<String, Object> error(Object message) {
 		LOG.warn(message.toString());
 		return Collections.singletonMap("error", message);

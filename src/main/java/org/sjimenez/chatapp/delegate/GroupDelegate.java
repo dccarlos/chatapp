@@ -31,8 +31,10 @@ public class GroupDelegate {
     ChatDao chatDao;
 
     public Group createGroup(String groupName) {
+        logger.warn("group name");
         Optional<Group> optionalGroup = groupDao.selectGroupByName(groupName);
-        if (!optionalGroup.isPresent()) {
+        logger.warn("group name"+optionalGroup.get());
+        if (optionalGroup.isPresent()) {
             logger.warn("Duplicate group name");
             throw new DuplicateKeyException("Duplicate group name");
         }
@@ -44,7 +46,12 @@ public class GroupDelegate {
     }
 
     public Group fetchGroupByName(String groupName) {
-        return groupDao.selectGroupByName(groupName).get();
+        Optional<Group> group = groupDao.selectGroupByName(groupName);
+        if (!group.isPresent()) {
+            logger.warn("Group not found");
+            throw new EntityNotFoundException();
+        }
+        return group.get();
     }
 
 
@@ -98,7 +105,6 @@ public class GroupDelegate {
             throw new EntityNotFoundException();
         }
         int idgroup = group.get().getIdgroup();
-
         userIdList.forEach((iduser) -> {
             Optional<User> user = Optional.ofNullable(chatDao.selectUserById(iduser));
             if (!user.isPresent())

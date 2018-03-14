@@ -51,7 +51,6 @@ public class GroupController {
 	 */
 	@GetMapping("/{groupName}")
 	public ResponseEntity<Group> fetchGroupByName(@PathVariable("groupName") @NotEmpty @NotNull String groupName) {
-		System.out.println("log");
 		return new ResponseEntity<Group>(groupDelegate.fetchGroupByName(groupName), HttpStatus.OK);
 	}
 
