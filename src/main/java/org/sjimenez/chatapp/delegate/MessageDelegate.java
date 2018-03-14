@@ -24,7 +24,7 @@ public class MessageDelegate {
     public void sendMessageToGroup(String groupName, Message messageContent) {
         Optional<Group> group = groupDao.selectGroupByName(groupName);
         if (!group.isPresent()) {
-            logger.warn("Group not found");
+            logger.warn("Group "+groupName+" not found ");
             throw new EntityNotFoundException();
         }
         int idgroup = group.get().getIdgroup();
@@ -35,7 +35,7 @@ public class MessageDelegate {
     public List<Message> fetchAllMessagesFromGroup(String groupName) {
         Optional<Group> group = groupDao.selectGroupByName(groupName);
         if (!group.isPresent()) {
-            logger.warn("Group not found");
+            logger.warn("Group "+groupName+" not found ");
             throw new EntityNotFoundException();
         }
         int idgroup = group.get().getIdgroup();

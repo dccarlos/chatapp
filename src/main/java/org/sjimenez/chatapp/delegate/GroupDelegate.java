@@ -31,11 +31,9 @@ public class GroupDelegate {
     ChatDao chatDao;
 
     public Group createGroup(String groupName) {
-        logger.warn("group name");
         Optional<Group> optionalGroup = groupDao.selectGroupByName(groupName);
-        logger.warn("group name"+optionalGroup.get());
         if (optionalGroup.isPresent()) {
-            logger.warn("Duplicate group name");
+            logger.warn("Duplicate group name"+groupName);
             throw new DuplicateKeyException("Duplicate group name");
         }
         Group group = new Group();
@@ -48,17 +46,16 @@ public class GroupDelegate {
     public Group fetchGroupByName(String groupName) {
         Optional<Group> group = groupDao.selectGroupByName(groupName);
         if (!group.isPresent()) {
-            logger.warn("Group not found");
+            logger.warn("Group "+groupName+" not found ");
             throw new EntityNotFoundException();
         }
         return group.get();
     }
 
-
     public Group updateGroupByName(String groupName, String newGroupName) {
         Optional<Group> group = groupDao.selectGroupByName(groupName);
         if (!group.isPresent()) {
-            logger.warn("Group not found");
+            logger.warn("Group "+groupName+" not found ");
             throw new EntityNotFoundException();
         }
         groupDao.updateGroup(newGroupName, groupName);
@@ -68,7 +65,7 @@ public class GroupDelegate {
     public void deleteGroupByName(String groupName) {
         Optional<Group> group = groupDao.selectGroupByName(groupName);
         if (!group.isPresent()) {
-            logger.warn("Group not found");
+            logger.warn("Group "+groupName+" not found ");
             throw new EntityNotFoundException();
         }
         groupDao.deleteGroupById(group.get().getIdgroup());
@@ -83,7 +80,7 @@ public class GroupDelegate {
     public List<User> addUserToGroup(String groupName, List<Integer> userIdList) {
         Optional<Group> group = groupDao.selectGroupByName(groupName);
         if (!group.isPresent()) {
-            logger.warn("Group not found");
+            logger.warn("Group "+groupName+" not found ");
             throw new EntityNotFoundException();
         }
         int idgroup = group.get().getIdgroup();
@@ -101,7 +98,7 @@ public class GroupDelegate {
     public List<User> removeUserFromGroup(String groupName, List<Integer> userIdList) {
         Optional<Group> group = groupDao.selectGroupByName(groupName);
         if (!group.isPresent()) {
-            logger.warn("Group not found");
+            logger.warn("Group "+groupName+" not found ");
             throw new EntityNotFoundException();
         }
         int idgroup = group.get().getIdgroup();
