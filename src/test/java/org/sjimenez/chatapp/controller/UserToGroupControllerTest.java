@@ -1,6 +1,7 @@
 package org.sjimenez.chatapp.controller;
 
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -9,6 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.junit.AfterClass;
@@ -18,13 +20,20 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.sjimenez.chatapp.controllers.UserToGroupController;
+import org.sjimenez.chatapp.dao.GroupDao;
 import org.sjimenez.chatapp.delegate.GroupDelegate;
 import org.sjimenez.chatapp.mappers.UserMapper;
 import org.sjimenez.chatapp.model.Group;
 import org.sjimenez.chatapp.model.User;
+import org.sjimenez.chatapp.test.UserDbMapperTest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.ResponseEntity;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -43,6 +52,16 @@ public class UserToGroupControllerTest {
 	private List<User> userList;
 	
 	private User user;
+
+	@Autowired
+	private TestRestTemplate restTemplate;
+
+	@MockBean
+	private GroupDao groupDao;
+
+	@LocalServerPort
+	private int port;
+	private static final Logger logger = LoggerFactory.getLogger(UserDbMapperTest.class);
 	
 	@Before
 	public void init() {
@@ -94,8 +113,62 @@ public class UserToGroupControllerTest {
 		verify(groupDelegate).removeUserFromGroup(testGroupBean.getName(), removeUsers);
 		assertArrayEquals(userList.toArray(), responseEntity.getBody().toArray());
 	}
-	
-	
+
+	@Test
+	public void deleteGroupByName_EmptyList(){
+		when(groupDao.selectGroupByName("name1")).thenReturn(Optional.ofNullable(null));
+		//groupDelegate.removeUserFromGroup("name1", new ArrayList<Integer>(){{ add(1);add(2);add(3); }});
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpEntity<Void> request = new HttpEntity<Void>(headers);
+		ResponseEntity<Void> response = restTemplate.exchange("http://localhost:" + String.valueOf(port) + "/userToGroup/name1?userList=", HttpMethod.DELETE, request, Void.class);
+		assertEquals("List is not empty", HttpStatus.BAD_REQUEST, response.getStatusCode());
+	}
+
+	@Test
+	public void deleteGroupByName_NotFoundException(){
+		when(groupDao.selectGroupByName("name1")).thenReturn(Optional.ofNullable(null));
+		//groupDelegate.removeUserFromGroup("name1", new ArrayList<Integer>(){{ add(1);add(2);add(3); }});
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpEntity<Void> request = new HttpEntity<Void>(headers);
+		ResponseEntity<Void> response = restTemplate.exchange("http://localhost:" + String.valueOf(port) + "/userToGroup/name1?userList=1,2", HttpMethod.DELETE, request, Void.class);
+		assertEquals("Status code must be 404", HttpStatus.NOT_FOUND, response.getStatusCode());
+	}
+
+	@Test
+	public void addUserToGroup_EmptyList(){
+		when(groupDao.selectGroupByName("name1")).thenReturn(Optional.ofNullable(null));
+		//groupDelegate.removeUserFromGroup("name1", new ArrayList<Integer>(){{ add(1);add(2);add(3); }});
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpEntity<Void> request = new HttpEntity<Void>(headers);
+		ResponseEntity<Void> response = restTemplate.exchange("http://localhost:" + String.valueOf(port) + "/userToGroup/name1?userList=", HttpMethod.POST, request, Void.class);
+		assertEquals("List is not empty", HttpStatus.BAD_REQUEST, response.getStatusCode());
+	}
+
+	@Test
+	public void addUserToGroup_NotFoundException(){
+		when(groupDao.selectGroupByName("name1")).thenReturn(Optional.ofNullable(null));
+		//groupDelegate.removeUserFromGroup("name1", new ArrayList<Integer>(){{ add(1);add(2);add(3); }});
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpEntity<Void> request = new HttpEntity<Void>(headers);
+		ResponseEntity<Void> response = restTemplate.exchange("http://localhost:" + String.valueOf(port) + "/userToGroup/name1?userList=1,2", HttpMethod.POST, request, Void.class);
+		assertEquals("Status code must be 404", HttpStatus.NOT_FOUND, response.getStatusCode());
+	}
+
+	@Test
+	public void fetchUsersByGroupName_NotFoundException(){
+		when(groupDao.selectGroupByName("name1")).thenReturn(Optional.ofNullable(null));
+		//groupDelegate.removeUserFromGroup("name1", new ArrayList<Integer>(){{ add(1);add(2);add(3); }});
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		HttpEntity<Void> request = new HttpEntity<Void>(headers);
+		ResponseEntity<Void> response = restTemplate.exchange("http://localhost:" + String.valueOf(port) + "/userToGroup/name1?userList", HttpMethod.GET, request, Void.class);
+		assertEquals("Status code must be 404", HttpStatus.NOT_FOUND, response.getStatusCode());
+	}
+
 	private Group createGroupForTest(String groupName) {
 		Group group = new Group();
 		group.setName(groupName);

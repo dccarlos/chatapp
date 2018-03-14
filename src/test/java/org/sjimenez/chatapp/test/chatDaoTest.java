@@ -103,4 +103,6 @@ import static org.junit.Assert.assertEquals;
         User selectedUser = chatDao.selectUserByMail("sjc@gmail.com");
         assertEquals("Equal objects", user, selectedUser);
     }
+
+
 }

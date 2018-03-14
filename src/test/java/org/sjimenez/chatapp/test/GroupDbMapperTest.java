@@ -102,6 +102,12 @@ public class GroupDbMapperTest {
         Group group = groupMapper.selectGroupByName("groupname1");
         Assert.assertEquals("diferent object get group with list", groupToAssert, group);
     }
+    @Test
+    public void selectUsersByGroupId(){
+        List<User> userList=groupMapper.selectUsersById(1);
+        Assert.assertNotNull(userList);
+        Assert.assertNotEquals("Must Not be empty",userList.size(),0);
+    }
 
     @Test
     public void insertGroupTest() {

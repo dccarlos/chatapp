@@ -203,76 +203,57 @@ export default AppPanel;
 
 /*
 'use strict';
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {Panel, Button, Table, Grid, Row, Col} from 'react-bootstrap';
 import SockJS from 'sockjs-client';
-
 import {Stomp} from '../../../util/stomp';
-
 import {SimpleTextFormControl} from '../util/ViewsUtils.react';
-
 var stompClient = null;
 var isConnected = false;
-
 function initStompClient(onConnectionCallback, onMessageCallback) {
     if (stompClient == null || !isConnected) {
         console.log('Starting STOMP over SocksJS...');
-
         var socket = new SockJS('/sample-chat');
         stompClient = Stomp.over(socket);
-
         stompClient.connect({}, function (frame) {
             console.log('STOMP Connection: ' + frame);
-
             stompClient.subscribe('/topic/chat', function (greeting) {
                 onMessageCallback(greeting);
             });
-
             onConnectionCallback(true, onConnectionCallback);
         }, function (frame) {
             console.log('STOMP Disconnection error: ' + frame);
             onConnectionCallback(false, onConnectionCallback);
         });
     }
-
     return stompClient;
 }
-
 function disconnectStompClient(onConnectionCallback) {
     if (stompClient != null) {
         stompClient.disconnect(function () {
             console.log('STOMP Disconnection');
-
             onConnectionChange(false, onConnectionCallback);
         });
     }
 }
-
 function onConnectionChange(connected, callback) {
     isConnected = connected;
     callback(connected);
 }
-
 function sendMessage(message) {
     stompClient.send("/app/chat", {}, JSON.stringify({'content': message}));
 }
-
 let AppPanel = (function () {
-
-
     return class AppPanel extends React.Component {
         constructor(props) {
             super(props);
-
             this.state = {
                 response: '',
                 request: '',
                 messages: [],
                 isConnected: false
             };
-
             this.connectChat = this.connectChat.bind(this);
             this.disconnectChat = this.disconnectChat.bind(this);
             this.onChangeRequestMessage = this.onChangeRequestMessage.bind(this);
@@ -282,14 +263,12 @@ let AppPanel = (function () {
             this.onResponseReceived = this.onResponseReceived.bind(this);
             this.setConnected = this.setConnected.bind(this);
         }
-
         connectChat() {
             initStompClient(
                 this.setConnected,
                 this.onResponseReceived
             );
         }
-
         disconnectChat() {
             disconnectStompClient((isConnected) => {
                 this.setState({
@@ -297,38 +276,31 @@ let AppPanel = (function () {
                 });
             });
         }
-
         setConnected(isConnected) {
             this.setState({
                 isConnected: isConnected
             });
         }
-
         onChangeRequestMessage(e) {
             this.setState({
                 request: e.target.value
             });
         }
-
         onResponseReceived(message) {
             var msg = {text: JSON.parse(message.body).content, id: message.headers["message-id"]};
             let messages = this.state.messages;
-
             this.setState({
                 messages: messages.concat(msg)
             });
         }
-
         handleEnterKeyPress(e) {
             if (e.key === 'Enter') {
                 this.executeRequest();
             }
         }
-
         canExecuteRequest() {
             return (this.state.isConnected && this.state.request && this.state.request.trim().length > 0);
         }
-
         executeRequest() {
             if (this.canExecuteRequest()) {
                 sendMessage(this.state.request.trim());
@@ -337,13 +309,10 @@ let AppPanel = (function () {
                 });
             }
         }
-
         componentWillMount() {
             this.connectChat();
         }
-
         render() {
-
             let messages = this.state.messages.map(message => {
                 return (
                     <tr key={message.id}>
@@ -351,7 +320,6 @@ let AppPanel = (function () {
                     </tr>
                 );
             });
-
             let messageList = (
                 <Panel>
                     <div style={{overflowY:"scroll", height: "500px"}}>
@@ -367,7 +335,6 @@ let AppPanel = (function () {
                     </div>
                 </Panel>
             );
-
             return (
                 <Grid fluid={true}>
                     <Row className="show-grid">
@@ -400,6 +367,5 @@ let AppPanel = (function () {
         }
     }
 }());
-
 export default AppPanel;
 */

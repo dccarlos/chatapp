@@ -2,6 +2,7 @@ package org.sjimenez.chatapp.controllers;
 
 import org.sjimenez.chatapp.dao.ChatDao;
 import org.sjimenez.chatapp.mappers.UserMapper;
+import org.sjimenez.chatapp.model.Group;
 import org.sjimenez.chatapp.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,12 +27,30 @@ public class UserResourceController {
 
     @Autowired
     private ChatDao chatDao;
+
     private UserMapper userMapper;
+
     private Optional<User> userOptional;
 
     @GetMapping("/all")
     public List<User> getAll() {
         return chatDao.findAll();
+    }
+
+
+
+    @GetMapping("/selectgroups/{mail:.+}")//this {mail:.+} is for dont truncate the domain name
+    public ResponseEntity<List<Group>> getGroups(@PathVariable("mail") String mail) {
+        logger.error("mail"+mail);
+        User user1=chatDao.selectUserByMail(mail);
+        System.out.println("obtained"+user1);
+        Optional<User> user=Optional.ofNullable(chatDao.selectUserByMail(mail));
+        if(!user.isPresent()){
+            logger.error("Duplicated keys");
+            return new ResponseEntity<List<Group>>(HttpStatus.NO_CONTENT);
+        }
+        int iduser=user.get().getIduser();
+        return new ResponseEntity<List<Group>>(chatDao.selectGroupsFromUserById(iduser),HttpStatus.OK   );
     }
 
     @PostMapping("/login")
@@ -66,6 +85,15 @@ public class UserResourceController {
     @GetMapping("/getUserById/{iduser}")
     public ResponseEntity<User> getUserById(@PathVariable("iduser") Integer iduser) {
         userOptional = Optional.ofNullable(chatDao.selectUserById(iduser));
+        if (!userOptional.isPresent()) {
+            logger.info("user with id to retrieve not found");
+            return new ResponseEntity<User>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<User>(userOptional.get(), HttpStatus.OK);
+    }
+    @GetMapping("/getUserByMail/{mail}")
+    public ResponseEntity<User> getUserById(@PathVariable("mail") String mail) {
+        userOptional = Optional.ofNullable(chatDao.selectUserByMail(mail));
         if (!userOptional.isPresent()) {
             logger.info("user with id to retrieve not found");
             return new ResponseEntity<User>(HttpStatus.NOT_FOUND);

@@ -66,7 +66,6 @@ public class GroupController {
 			@RequestParam("newGroupName") @NotEmpty @NotNull  String newGroupName) {
 		return new ResponseEntity<Group>(groupDelegate.updateGroupByName(groupName, newGroupName), HttpStatus.OK);
 	}
-
 	/**
 	 * Delete the group identified with the group name.
 	 */
